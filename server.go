@@ -4,7 +4,7 @@ import (
 //	"fmt"
 	"flag"
 	"log"
-	//"strings"
+	"strings"
 	"net/http"
 	//"net/url"
 	"github.com/gorilla/websocket"
@@ -13,7 +13,9 @@ import (
 
 var (
 	addr = flag.String("addr", ":8080", "http service address")
-	upgrader = websocket.Upgrader{}
+	upgrader = websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool { return true },
+	}
 	client = redis.NewClient(&redis.Options{
     Addr:     "localhost:6379",
     Password: "", // no password set
@@ -23,10 +25,15 @@ var (
 
 
 func getDataForOrganizer(organizer string) []byte {
-	//visitsKey := strings.Join([]string{"Organizer", organizer}, ":")
-	//visits := client.HGetAll(visitsKey)
-	//return visits
-	return []byte(`
+	visitsKey := strings.Join([]string{"Organizer", organizer}, ":")
+	visits , err := client.HGetAll(visitsKey).Result()
+	if err != nil {
+		log.Println("hgetall: ", err)
+	}
+	return []byte(visits[1])
+
+	/*
+  return []byte(`
 		{
 				"date": [
 						"2013-01-01",
@@ -66,6 +73,7 @@ func getDataForOrganizer(organizer string) []byte {
 				]
 		}
   `)
+  */
 }
 
 
@@ -82,10 +90,11 @@ func sendData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	values := r.URL.Query()
+	log.Println("Values:", values)
 	organizer := values.Get("organizer")
 
 	//TODO
-	initialData := getDataForOrganizer(organizer)
+	initialData, err := Parse() //getDataForOrganizer(organizer)
 	err = c.WriteMessage(websocket.TextMessage, initialData)
 	if err != nil {
 		log.Println("write:", err)
@@ -93,6 +102,7 @@ func sendData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pubsub, err := client.Subscribe(organizer)
+	log.Println("channel:", organizer)
 	if err != nil {
 		log.Print("subscribe:", err)
 		return
@@ -108,7 +118,7 @@ func sendData(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Printf("recv: %s", message.Payload)
 
-		data := getDataForOrganizer(organizer)
+		data, err := Parse() //getDataForOrganizer(organizer)
 		err = c.WriteMessage(websocket.TextMessage, data)
 		if err != nil {
 			log.Println("write:", err)
