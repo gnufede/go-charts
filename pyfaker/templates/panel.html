@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html class="no-js" lang="es">
+  <head>
+    <title>Panel</title>
+    <meta charset="utf-8" />
+    <link href="/static/style.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <ul>
+      <li class="ticket one" data-ticketid="1" data-price="20.00">
+        Entrada general
+        <span class="price">20,00 €</span>  
+      </li>
+  
+      <li class="ticket two" data-ticketid="2" data-price="10.00">
+        Entrada infantil
+        <span class="price">10,00 €</span>  
+      </li>
+     
+      <li class="ticket three" data-ticketid="3" data-price="15.00">
+        Entrada jubilados
+        <span class="price">15,00 €</span>  
+      </li>
+
+      <li class="ticket four" data-ticketid="4" data-price="0.00">
+        Entrada gratuita
+        <span class="price">gratis</span>         
+      </li>
+    </ul>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script>
+    $(function(){
+      $("li").click(function(event) {
+        var ticket_id = event.toElement.dataset.ticketid;
+        var price = event.toElement.dataset.price;
+        $.post("/update_ticket", {"ticket_id": ticket_id, "price": price});
+      });
+    });
+  </script>
+</body>
+</html>
