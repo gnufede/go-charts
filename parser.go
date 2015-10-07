@@ -48,6 +48,9 @@ func Parse() []byte {
 	channelTypes[3] = "IFrame"
 
 	result := make(map[string]map[string][]string)
+	for i := 1; i < 7; i++ {
+		result[strconv.Itoa(i)] = make(map[string][]string)
+	}
 	var dates []string
 	var amounts []string
 	weekAmount := 0
@@ -66,7 +69,7 @@ func Parse() []byte {
 		dates = append(dates, date[0])
 		counter += 1
 	}
-	result["5"] = make(map[string][]string)
+
 	result["5"]["dates"] = dates
 
 	for _, date := range dates {
@@ -82,7 +85,7 @@ func Parse() []byte {
 		// Increment week amount
 		weekAmount += values
 
-		// Increment week quantity
+		// // Increment week quantity
 		key = "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":Date:" + date + ":Quantity"
 		dayQuantity, dayQuantity_err := redis.Int(redisScript.Do(redisConn, key))
 		if dayQuantity_err != nil {
@@ -124,8 +127,10 @@ func Parse() []byte {
 	totalAmount, _ := redis.Int(redisConn.Do("GET", eventTotalAmountKey))
 	result["4"]["Value"] = append(result["4"]["Value"], strconv.Itoa(totalAmount))
 	// Channel quantity distribution
-	for channel, channelName := range channelTypes {
-		result["6"][channelName] = append(result["6"][channelName], strconv.Itoa(channelWeekQuantity[channel]))
+	// for channel, channelName := range channelTypes {
+	for _, channelName := range channelTypes {
+		result["6"][channelName] = append(result["6"][channelName], strconv.Itoa(0))
+		// result["6"][channelName] = append(result["6"][channelName], strconv.Itoa(channelWeekQuantity[channel]))
 	}
 
 	output, o_err := json.Marshal(result)
