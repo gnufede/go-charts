@@ -1,3 +1,15 @@
+function connect_websocket() {
+    var ws = new WebSocket("ws://localhost:8080/ws?organizer=1");
+
+    ws.onclose = function(){
+        setTimeout(function(){connect_websocket()}, 5000);
+    };
+
+    ws.onmessage = function (evt) {
+        chart.load({json:JSON.parse(evt.data)});
+    };
+}
+
 
 var toggled = true;
 var chart = c3.generate({
@@ -6,14 +18,7 @@ var chart = c3.generate({
     },
     data: {
         x: 'date',
-        // url: 'http://private-dee9c-fedemon.apiary-mock.com/1.2/json/graph2.json',
-        json: {
-            "date": ["2013-01-01", "2013-01-02", "2013-01-03", "2013-01-04", "2013-01-05", "2013-01-06", "2013-01-07"],
-            "amount": [1500, 1000, 3000, 4000, 0, 2500, 3000],
-            "children tickets":[ 10, 50, 25, 100, 0, 0, 100],
-            "adult tickets":[ 20, 150, 75, 300, 150, 250, 250],
-            "total tickets":[ 30, 200, 100, 400, 150, 250, 350]
-        },
+        json: {},
         onclick: function (d, i) {
             if (toggled) {
                 chart.toggle("children tickets");
@@ -111,6 +116,8 @@ var channel = c3.generate({
 });
 
 d3.select('.container')
+
+connect_websocket();
 
 // setTimeout(function () {
 //     chart.load({
