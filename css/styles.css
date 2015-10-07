@@ -1,0 +1,142 @@
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.row-10 {
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+#chart {
+  height: 400px;
+  margin: 0px auto;
+}
+
+#uv-div {
+  width: 100%;
+  margin: 0px auto;
+}
+
+.c3-line, .c3-target.c3-focused path.c3-line {
+  /*stroke-width: 8px;*/
+}
+
+.c3-line {
+    stroke-width: 5px;
+}
+
+.c3-axis-y-label, .c3-axis-y2-label {
+  font-size: 16px;
+}
+
+.info-figures {
+  margin-bottom: 20px;
+}
+
+.figures-section {
+  box-sizing: border-box;
+  padding: 0 10px;
+  margin-bottom: 10px;
+}
+
+.figures-box {
+  height: 162px;
+  color: #fff;
+  padding: 20px;
+  font-size: 20px;
+  border-radius: 2px;
+  position: relative;
+}
+
+.figures-box .fa {
+  opacity: .3;
+  position: absolute;
+  top: 10px;
+}
+
+.figures-box .fa-ticket {
+  font-size: 70px;
+  right: 10px;
+}
+
+.figures-box .fa-dollar {
+  font-size: 70px;
+  right: 20px;
+}
+
+.figures-box.tickets-sold {
+  background-color: #71B7C4;
+}
+
+.figures-box.tickets-revenue {
+  background-color: #E9854A;
+}
+
+.figures-box.tickets-sold-amount {
+  background-color: #ACCA86;
+}
+
+.figures-box.tickets-revenue-amount {
+  background-color: #495559;
+}
+
+.figures-title {
+  text-transform: uppercase;
+  line-height: 20px;
+  font-weight: 400;
+  height: 50px;
+}
+
+.figures-title .add-info {
+  display: block;
+  text-transform: lowercase;
+  font-weight: 200;
+}
+
+.figures {
+  font-weight: bold;
+}
+
+.figures .number {
+  font-size: 37px;
+  line-height: 27px;
+}
+
+.figures .add-info {
+  display: block;
+  font-weight: normal;
+}
+
+.chart-box {
+  padding: 0 10px;
+}
+
+.chart-content {
+  background-color: #fff;
+  padding: 20px;
+}
+
+.chart-title {
+  font-size: 16px;
+  line-height: 14px;
+  color: #444;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #ededed;
+  padding: 15px 20px;
+  font-weight: 200;
+  margin: 0;
+}
+
+@media (max-width: 1200px){
+  .figures-box {
+    height: 152px;
+  }
+
+  .figures-box {
+    font-size: 16px;
+  }
+  .figures .number {
+    font-size: 27px;
+    line-height: 17px;
+  }
+}
