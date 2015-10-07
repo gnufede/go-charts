@@ -179,6 +179,9 @@ func configure_routes() {
  	    http.ServeFile(w, r, "pyfaker/templates/panel.html")
 	})
 
+	http.HandleFunc("/update_ticket", update_ticket)
+	http.HandleFunc("/ws", sendData)
+
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("js"))))
 }
