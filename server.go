@@ -174,8 +174,8 @@ func configure_routes() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "index.html")
 	})
-	http.HandleFunc("/gofaker", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "pyfaker/templates/panel.html")
+	http.HandleFunc("/simulator", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "simulator.html")
 	})
 
 	http.HandleFunc("/update_ticket", update_ticket)
