@@ -15,57 +15,57 @@ def index():
   return render_template('panel.html')
 
 
-@app.route('/update_ticket', methods=['POST'])
-def update_sold_tickets():
-  fake_begin_key = 'Organizer:1:Event:1:Channel:1:Session:1' #:Zone:1'
+# @app.route('/GOATSE', methods=['POST'])
+# def update_sold_tickets():
+  # fake_begin_key = 'Organizer:1:Event:1:Channel:1:Session:1' #:Zone:1'
 
-  ticket_id = request.form['ticket_id']
-  today = date.today().strftime('%Y-%m-%d')
-  price = request.form['price']
+  # ticket_id = request.form['ticket_id']
+  # today = date.today().strftime('%Y-%m-%d')
+  # price = request.form['price']
 
-  pipe = r.pipeline()
+  # pipe = r.pipeline()
 
-  # Add ticket to total quantity
-  #tickets_quantity_key = '%(fake_begin_key)s:%(today)s:TicketsQuantity' % locals()
-  tickets_quantity_key = '%(fake_begin_key)s:Date:%(today)s' % locals()
-  pipe.hincrby(tickets_quantity_key, datetime.now().strftime('%H:%M'), 1)
+  # # Add ticket to total quantity
+  # #tickets_quantity_key = '%(fake_begin_key)s:%(today)s:TicketsQuantity' % locals()
+  # tickets_quantity_key = '%(fake_begin_key)s:Date:%(today)s' % locals()
+  # pipe.hincrby(tickets_quantity_key, datetime.now().strftime('%H:%M'), 1)
 
-  # Add price to ticket type total amount
-  ticket_type_amount_key = '%(fake_begin_key)s:TicketType:%(ticket_id)s:Date:%(today)s:Amount' % locals()
-  pipe.hincrby(ticket_type_amount_key, datetime.now().strftime('%H:%M'), price)
-  # Add price to ticket type total amount
-  ticket_type_quantity_key = '%(fake_begin_key)s:TicketType:%(ticket_id)s:Date:%(today)s:Quantity' % locals()
-  pipe.hincrby(ticket_type_quantity_key, datetime.now().strftime('%H:%M'), 1)
+  # # Add price to ticket type total amount
+  # ticket_type_amount_key = '%(fake_begin_key)s:TicketType:%(ticket_id)s:Date:%(today)s:Amount' % locals()
+  # pipe.hincrby(ticket_type_amount_key, datetime.now().strftime('%H:%M'), price)
+  # # Add price to ticket type total amount
+  # ticket_type_quantity_key = '%(fake_begin_key)s:TicketType:%(ticket_id)s:Date:%(today)s:Quantity' % locals()
+  # pipe.hincrby(ticket_type_quantity_key, datetime.now().strftime('%H:%M'), 1)
 
-  # Increment event session date amount
-  event_session_amount_key = '%(fake_begin_key)s:Date:%(today)s:Amount' % locals()
-  pipe.hincrby(event_session_amount_key, datetime.now().strftime('%H:%M'), price)
-  # Increment event session date quantity
-  event_session_quantity_key = '%(fake_begin_key)s:Date:%(today)s:Quantity' % locals()
-  pipe.hincrby(event_session_quantity_key, datetime.now().strftime('%H:%M'), 1)
+  # # Increment event session date amount
+  # event_session_amount_key = '%(fake_begin_key)s:Date:%(today)s:Amount' % locals()
+  # pipe.hincrby(event_session_amount_key, datetime.now().strftime('%H:%M'), price)
+  # # Increment event session date quantity
+  # event_session_quantity_key = '%(fake_begin_key)s:Date:%(today)s:Quantity' % locals()
+  # pipe.hincrby(event_session_quantity_key, datetime.now().strftime('%H:%M'), 1)
 
-  # Increment event total amount
-  event_total_amount = 'Organizer:1:Event:1:TotalAmount'
-  pipe.incrby(event_total_amount, price)
-  # Increment event total quantity
-  event_total_amount = 'Organizer:1:Event:1:TotalQuantity'
-  pipe.incrby(event_total_amount, 1)
-  # Increment event total amount per channel
-  event_channel_total_amount = 'Organizer:1:Event:1:Channel:1:Date:%(today)s:Amount' % locals()
-  pipe.incrby(event_channel_total_amount, price)
-  # Increment event total quantity per channel
-  event_channel_total_amount = 'Organizer:1:Event:1:Channel:1:Date:%(today)s:Quantity' % locals()
-  pipe.incrby(event_channel_total_amount, 1)
-
-
-  pipe.execute()
+  # # Increment event total amount
+  # event_total_amount = 'Organizer:1:Event:1:TotalAmount'
+  # pipe.incrby(event_total_amount, price)
+  # # Increment event total quantity
+  # event_total_amount = 'Organizer:1:Event:1:TotalQuantity'
+  # pipe.incrby(event_total_amount, 1)
+  # # Increment event total amount per channel
+  # event_channel_total_amount = 'Organizer:1:Event:1:Channel:1:Date:%(today)s:Amount' % locals()
+  # pipe.incrby(event_channel_total_amount, price)
+  # # Increment event total quantity per channel
+  # event_channel_total_amount = 'Organizer:1:Event:1:Channel:1:Date:%(today)s:Quantity' % locals()
+  # pipe.incrby(event_channel_total_amount, 1)
 
 
-  # Publish to the organizer channel
-  publish_channel = "1" #"%(fake_begin_key)s:UpdateCounters" % locals()
-  r.publish(publish_channel, True)
+  # pipe.execute()
 
-  return "OK"
+
+  # # Publish to the organizer channel
+  # publish_channel = "1" #"%(fake_begin_key)s:UpdateCounters" % locals()
+  # r.publish(publish_channel, True)
+
+  # return "OK"
 
 
 
