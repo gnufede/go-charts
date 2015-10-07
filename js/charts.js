@@ -9,8 +9,11 @@ function connect_websocket() {
         var stuff = JSON.parse(evt.data)
         chart.load({json:stuff["5"]});
         channel.load({json:stuff["6"]});
-//        $("#tickets-sold-number").text(stuff["1"].Value[0]);
-        update_value($("#tickets-sold-number"), stuff["1"].Value[0]);
+        $("#tickets-sold-number").text(stuff["1"].Value[0]);
+        $("#tickets-revenue-number").text(stuff["2"].Value[0]);
+        $("#tickets-sold-amount").text(stuff["3"].Value[0]);
+        $("#tickets-revenue-amount").text(stuff["4"].Value[0]);
+//        update_value($("#tickets-sold-number"), stuff["1"].Value[0]);
 
     };
 }
@@ -20,18 +23,13 @@ function update_value(element, new_value) {
     var old_value = parseInt(element.text());
     var new_value = parseInt(new_value);
 
-//    if (old_value == 0) {
-//        set_new_metric(element, new_value);
-//    } else {
-
-        $({metric: old_value}).animate({metric: new_value+1}, {
-            duration: 700,
-            easing:'swing',
-            step: function() {
-                set_new_metric(element, parseInt(this.metric));
-            }
-        });
-//    }
+    $({metric: old_value}).animate({metric: new_value+1}, {
+        duration: 700,
+        easing:'swing',
+        step: function() {
+            set_new_metric(element, parseInt(this.metric));
+        }
+    });
 }
 
 function set_new_metric($selector, metric) {
