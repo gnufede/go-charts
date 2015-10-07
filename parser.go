@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/json"
+	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"strconv"
 	"strings"
 	"time"
-	"fmt"
 )
 
 var redisPool *redis.Pool
@@ -42,9 +42,17 @@ func Parse() []byte {
 
 	ticketTypes := make(map[int]string)
 	ticketTypes[1] = "General"
-	result := make(map[string][]string)
+	channelTypes := make(map[int]string)
+	channelTypes[1] = "Online"
+	channelTypes[2] = "BoxOffice"
+	channelTypes[3] = "IFrame"
+
+	result := make(map[string]map[string][]string)
 	var dates []string
 	var amounts []string
+	weekAmount := 0
+	weekQuantity := 0
+	channelWeekQuantity := make(map[int]int)
 
 	redisScript := redis.NewScript(1, dateValuesScript)
 	redisPool := newPool("localhost:6379")
@@ -58,17 +66,28 @@ func Parse() []byte {
 		dates = append(dates, date[0])
 		counter += 1
 	}
-	result["date"] = dates
+	result["5"]["dates"] = dates
 
 	for _, date := range dates {
 		// Get total amount sales group by date
-		key := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":Date:" + date
+		key := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":Date:" + date + ":Amount"
 		values, values_err := redis.Int(redisScript.Do(redisConn, key))
 		if values_err != nil {
 			panic(values_err)
 		}
 		amounts = append(amounts, strconv.Itoa(values))
-		result["amount"] = amounts
+		result["5"]["amount"] = amounts
+
+		// Increment week amount
+		weekAmount += values
+
+		// Increment week quantity
+		key = "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":Date:" + date + ":Quantity"
+		dayQuantity, dayQuantity_err := redis.Int(redisScript.Do(redisConn, key))
+		if dayQuantity_err != nil {
+			panic(values_err)
+		}
+		weekQuantity += dayQuantity
 
 		for id, name := range ticketTypes {
 			// Get total quantity group by ticket type
@@ -77,10 +96,31 @@ func Parse() []byte {
 			if values_err != nil {
 				panic(values_err)
 			}
-			result[name] = append(result[name], strconv.Itoa(values))
+			result["5"][name] = append(result["5"][name], strconv.Itoa(values))
 		}
 
+		for channel, _ := range channelTypes {
+			channelTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":Date:" + date + ":Quantity"
+			channelQuantity, channelQuantity_err := redis.Int(redisConn.Do("GET", channelTypeKey))
+			if channelQuantity_err != nil {
+				panic("ERROR WITH CHANNEL WEEK QUANTITY")
+			}
+			channelWeekQuantity[channel] += channelQuantity
+		}
 	}
+
+	// Week amount and quantity
+	result["1"]["Value"] = append(result["1"]["Value"], strconv.Itoa(weekQuantity))
+	result["2"]["Value"] = append(result["2"]["Value"], strconv.Itoa(weekAmount))
+	// Event total quantity
+	eventTotalQuantityKey := "Organizer" + ORGANIZER + ":Event:" + EVENT + "TotalQuantity"
+	totalQuantity, _ := redis.Int(redisConn.Do("GET", eventTotalQuantityKey))
+	result["3"]["Value"] = append(result["3"]["Value"], strconv.Itoa(totalQuantity))
+	// Event total amount
+	eventTotalAmountKey := "Organizer" + ORGANIZER + ":Event:" + EVENT + "TotalAmount"
+	totalAmount, _ := redis.Int(redisConn.Do("GET", eventTotalAmountKey))
+	result["4"]["Value"] = append(result["4"]["Value"], strconv.Itoa(totalAmount))
+	// TODO: Channel quantity distribution
 
 	output, o_err := json.Marshal(result)
 	if o_err != nil {
@@ -88,7 +128,7 @@ func Parse() []byte {
 	}
 	redisPool.Close()
 	fmt.Println(result)
-	return output // GetBytes(output)
+	return output
 }
 
 func newPool(server string) *redis.Pool {
