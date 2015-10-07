@@ -43,9 +43,9 @@ func Parse() []byte {
 
 	ticketTypes := make(map[int]string)
 	ticketTypes[1] = "General"
-	ticketTypes[1] = "Infantil"
-	ticketTypes[1] = "Jubilados"
-	ticketTypes[1] = "Gratuita"
+	ticketTypes[2] = "Infantil"
+	ticketTypes[3] = "Jubilados"
+	ticketTypes[4] = "Gratuita"
 	channelTypes := make(map[int]string)
 	channelTypes[1] = "Online"
 	channelTypes[2] = "BoxOffice"
@@ -84,7 +84,7 @@ func Parse() []byte {
 			fmt.Println(values_err)
 			values = 0
 		}
-		amounts = append(amounts, strconv.Itoa(values))
+		amounts = append(amounts, strconv.Itoa(values/100))
 		result["5"]["amount"] = amounts
 
 		// Increment week amount
@@ -124,7 +124,7 @@ func Parse() []byte {
 	fmt.Println("Previus week amount")
 	fmt.Println(weekAmount)
 	result["1"]["Value"] = append(result["1"]["Value"], strconv.Itoa(weekQuantity))
-	result["2"]["Value"] = append(result["2"]["Value"], strconv.Itoa(weekAmount))
+	result["2"]["Value"] = append(result["2"]["Value"], strconv.Itoa(weekAmount/100))
 	// Event total quantity
 	eventTotalQuantityKey := "Organizer" + ORGANIZER + ":Event:" + EVENT + "TotalQuantity"
 	totalQuantity, _ := redis.Int(redisConn.Do("GET", eventTotalQuantityKey))
@@ -132,7 +132,7 @@ func Parse() []byte {
 	// Event total amount
 	eventTotalAmountKey := "Organizer" + ORGANIZER + ":Event:" + EVENT + "TotalAmount"
 	totalAmount, _ := redis.Int(redisConn.Do("GET", eventTotalAmountKey))
-	result["4"]["Value"] = append(result["4"]["Value"], strconv.Itoa(totalAmount))
+	result["4"]["Value"] = append(result["4"]["Value"], strconv.Itoa(totalAmount/100))
 	// Channel quantity distribution
 	for channel, channelName := range channelTypes {
 		result["6"][channelName] = append(result["6"][channelName], strconv.Itoa(channelWeekQuantity[channel]))
