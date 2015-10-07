@@ -55,8 +55,9 @@ func Parse() []byte {
 	for i := 1; i < 7; i++ {
 		result[strconv.Itoa(i)] = make(map[string][]string)
 	}
+
 	var dates []string
-	var amounts []string
+
 	weekAmount := 0
 	weekQuantity := 0
 	channelWeekQuantity := make(map[int]int)
@@ -77,54 +78,33 @@ func Parse() []byte {
 	result["5"]["date"] = dates
 
 	for _, date := range dates {
-		// Get total amount sales group by date
-		key := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":Date:" + date + ":Amount"
-		values, values_err := redis.Int(redisScript.Do(redisConn, key))
-		if values_err != nil {
-			fmt.Println(values_err)
-			values = 0
-		}
-		amounts = append(amounts, strconv.Itoa(values/100))
-		result["5"]["Amount"] = amounts
+		value := getChannelDataTotals(date, "Amount", channelTypes, redisScript, redisConn)
+		sessionAmount := value / 100
+		result["5"]["Amount"] = append(result["5"]["Amount"], strconv.Itoa(sessionAmount))
 
 		// Increment week amount
-		weekAmount += values
+		weekAmount += sessionAmount
 
-		// // Increment week quantity
-		key = "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":Date:" + date + ":Quantity"
-		dayQuantity, dayQuantity_err := redis.Int(redisScript.Do(redisConn, key))
-		if dayQuantity_err != nil {
-			fmt.Println(values_err)
-			dayQuantity = 0
-		}
-		weekQuantity += dayQuantity
+		value = getChannelDataTotals(date, "Quantity", channelTypes, redisScript, redisConn)
+		sessionQuantity := value
+		result["5"]["Amount"] = append(result["5"]["Amount"], strconv.Itoa(sessionQuantity))
+		weekQuantity += sessionQuantity
 
 		for id, name := range ticketTypes {
-			// Get total quantity group by ticket type
-			ticketTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":TicketType:" + strconv.Itoa(id) + ":Date:" + date + ":Quantity"
-			values, values_err := redis.Int(redisScript.Do(redisConn, ticketTypeKey))
-			if values_err != nil {
-				fmt.Println(values_err)
-				values = 0
-			}
-			result["5"][name] = append(result["5"][name], strconv.Itoa(values))
+			ticketQuantity := getTicketTypeTotals(date, "Quantity", id, channelTypes, redisScript, redisConn)
+			result["5"][name] = append(result["5"][name], strconv.Itoa(ticketQuantity))
 		}
 
 		for channel, _ := range channelTypes {
-			channelTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":Date:" + date + ":Quantity"
-			channelQuantity, channelQuantity_err := redis.Int(redisScript.Do(redisConn, channelTypeKey))
-			if channelQuantity_err != nil {
-				channelQuantity = 0
-			}
+			channelQuantity := getTotalPerChannel(date, "Quantity", channel, redisScript, redisConn)
 			channelWeekQuantity[channel] += channelQuantity
 		}
+
 	}
 
 	// Week amount and quantity
-	fmt.Println("Previus week amount")
-	fmt.Println(weekAmount)
 	result["1"]["Value"] = append(result["1"]["Value"], strconv.Itoa(weekQuantity))
-	result["2"]["Value"] = append(result["2"]["Value"], strconv.Itoa(weekAmount/100))
+	result["2"]["Value"] = append(result["2"]["Value"], strconv.Itoa(weekAmount))
 	// Event total quantity
 	eventTotalQuantityKey := "Organizer" + ORGANIZER + ":Event:" + EVENT + "TotalQuantity"
 	totalQuantity, _ := redis.Int(redisConn.Do("GET", eventTotalQuantityKey))
@@ -132,7 +112,7 @@ func Parse() []byte {
 	// Event total amount
 	eventTotalAmountKey := "Organizer" + ORGANIZER + ":Event:" + EVENT + "TotalAmount"
 	totalAmount, _ := redis.Int(redisConn.Do("GET", eventTotalAmountKey))
-	result["4"]["Value"] = append(result["4"]["Value"], strconv.Itoa(totalAmount/100))
+	result["4"]["Value"] = append(result["4"]["Value"], strconv.Itoa(totalAmount))
 	// Channel quantity distribution
 	for channel, channelName := range channelTypes {
 		result["6"][channelName] = append(result["6"][channelName], strconv.Itoa(channelWeekQuantity[channel]))
@@ -145,6 +125,45 @@ func Parse() []byte {
 	redisPool.Close()
 	fmt.Println(result)
 	return output
+}
+
+func getChannelDataTotals(date string, keyFragments string, channelTypes map[int]string, redisScript *redis.Script, redisConn redis.Conn) int {
+	result := 0
+	for channel, _ := range channelTypes {
+		key := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":Date:" + date + ":" + keyFragments
+		values, values_err := redis.Int(redisScript.Do(redisConn, key))
+		if values_err != nil {
+			fmt.Println(values_err)
+			values = 0
+		}
+		result += values
+	}
+	return result
+}
+
+func getTotalPerChannel(date string, keyFragments string, channel int, redisScript *redis.Script, redisConn redis.Conn) int {
+	key := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":Date:" + date + ":" + keyFragments
+	values, values_err := redis.Int(redisScript.Do(redisConn, key))
+	if values_err != nil {
+		fmt.Println(values_err)
+		values = 0
+	}
+
+	return values
+}
+
+func getTicketTypeTotals(date string, keyType string, ticketId int, channelTypes map[int]string, redisScript *redis.Script, redisConn redis.Conn) int {
+	result := 0
+	for channel, _ := range channelTypes {
+		ticketTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":TicketType:" + strconv.Itoa(ticketId) + ":Date:" + date + ":" + keyType
+		values, values_err := redis.Int(redisScript.Do(redisConn, ticketTypeKey))
+		if values_err != nil {
+			fmt.Println(values_err)
+			values = 0
+		}
+		result += values
+	}
+	return result
 }
 
 func newPool(server string) *redis.Pool {
