@@ -6,6 +6,11 @@ import (
 	"log"
 	"strings"
 	"net/http"
+
+	"time"
+	"strconv"
+	"github.com/rs/cors" // used for fuck the cors rules :)
+
 	//"net/url"
 	"github.com/gorilla/websocket"
 	"gopkg.in/redis.v3"
@@ -129,12 +134,90 @@ func sendData(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func leadingZeros(origin int) string {
+	origin_str := strconv.FormatInt(int64(origin), 10)
+
+	if len(origin_str) == 1 {
+		return "0" + origin_str
+	}	
+	return origin_str
+}
+
+
+
+func date_str() string {
+	t := time.Now()
+
+	result := strconv.FormatInt(int64(t.Year()), 10)
+	result += "-"
+	result += leadingZeros(int(t.Month()))
+	result += "-"
+	result += leadingZeros(t.Day())
+
+	return result
+}
+
+func time_str() string {
+	t := time.Now()	
+
+	result := strconv.FormatInt(int64(t.Hour()), 10)
+	result += ":"
+	result += leadingZeros(t.Minute())
+
+	return result
+}
+
+
+
+func update_ticket(w http.ResponseWriter, r *http.Request) {
+  ticket_id := r.FormValue("ticket_id")
+  price, _ := strconv.Atoi(r.FormValue("price"))
+  price_it64 := int64(price)
+	
+	const fake_session_key = "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION
+  fake_ticket_key := fake_session_key + ":TicketType:" + ticket_id + ":Date:" + date_str()
+
+
+	pipe := client.Pipeline()
+
+	// Add ticket to total quantity
+	pipe.HIncrBy(fake_session_key +	":Date:" + date_str(), time_str(),			 1)
+
+	// Add ticket to ticket type quantity
+	pipe.HIncrBy(fake_ticket_key, time_str(), 1)
+
+	// Increment ticket type
+	pipe.HIncrBy(fake_ticket_key + ":Quantity", time_str(), 1)
+	pipe.HIncrBy(fake_ticket_key + ":Amount", time_str(), price_it64)
+
+  // Increment event totals
+  const fake_event_key = "Organizer:" + ORGANIZER + ":Event:" + EVENT
+  pipe.IncrBy(fake_event_key + ":TotalQuantity", 1)
+  pipe.IncrBy(fake_event_key + ":TotalAmount", price_it64)
+
+  // Increment event totals per channel
+  fake_channel_with_date_key := fake_event_key + ":Channel:" + CHANNEL + ":Date:" + date_str()
+  pipe.IncrBy(fake_channel_with_date_key + ":Quantity", 1)
+  pipe.IncrBy(fake_channel_with_date_key + ":Amount", price_it64)
+
+	pipe.Exec()
+
+
+	client.Publish("1", "lets_go")
+}
+
+
+
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
 	http.HandleFunc("/ws", sendData)
 
-  if err := http.ListenAndServe(*addr, nil); err != nil {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/update_ticket", update_ticket)
+	handlerCors := cors.Default().Handler(mux)
+
+  if err := http.ListenAndServe(*addr, handlerCors); err != nil {
 		log.Fatal("ListenAndServe:", err)
 		client.Close()
 	}

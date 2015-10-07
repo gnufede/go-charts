@@ -35,7 +35,7 @@
       $("li").click(function(event) {
         var ticket_id = event.toElement.dataset.ticketid;
         var price = event.toElement.dataset.price;
-        $.post("/update_ticket", {"ticket_id": ticket_id, "price": price});
+        $.post("http://localhost:8080/update_ticket", {"ticket_id": ticket_id, "price": price});
       });
     });
   </script>
