@@ -94,7 +94,7 @@ func sendData(w http.ResponseWriter, r *http.Request) {
 	organizer := values.Get("organizer")
 
 	//TODO
-	initialData, err := Parse() //getDataForOrganizer(organizer)
+	initialData := Parse() //getDataForOrganizer(organizer)
 	err = c.WriteMessage(websocket.TextMessage, initialData)
 	if err != nil {
 		log.Println("write:", err)
@@ -118,8 +118,9 @@ func sendData(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Printf("recv: %s", message.Payload)
 
-		data, err := Parse() //getDataForOrganizer(organizer)
+		data := Parse() //getDataForOrganizer(organizer)
 		err = c.WriteMessage(websocket.TextMessage, data)
+		//err = c.WriteJSON(data)
 		if err != nil {
 			log.Println("write:", err)
 			break

@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"fmt"
 )
 
 var redisPool *redis.Pool
@@ -27,7 +28,7 @@ func GetBytes(key interface{}) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func Parse() ([]byte, error) {
+func Parse() []byte {
 	const dateValuesScript = `
         local values = redis.call("HVALS", KEYS[1])
         local sum = 0
@@ -46,7 +47,7 @@ func Parse() ([]byte, error) {
 	var amounts []string
 
 	redisScript := redis.NewScript(1, dateValuesScript)
-	redisPool = newPool("localhost:6379")
+	redisPool := newPool("localhost:6379")
 	redisConn := redisPool.Get()
 	defer redisConn.Close()
 
@@ -71,7 +72,7 @@ func Parse() ([]byte, error) {
 
 		for id, name := range ticketTypes {
 			// Get total quantity group by ticket type
-			ticketTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":TicketType:" + strconv.Itoa(id) + ":Date:" + date
+			ticketTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":TicketType:" + strconv.Itoa(id) + ":Date:" + date + ":Amount"
 			values, values_err := redis.Int(redisScript.Do(redisConn, ticketTypeKey))
 			if values_err != nil {
 				panic(values_err)
@@ -86,7 +87,8 @@ func Parse() ([]byte, error) {
 		panic("Error generating JSON")
 	}
 	redisPool.Close()
-	return GetBytes(output)
+	fmt.Println(result)
+	return output // GetBytes(output)
 }
 
 func newPool(server string) *redis.Pool {
