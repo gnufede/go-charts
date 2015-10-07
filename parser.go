@@ -66,6 +66,7 @@ func Parse() []byte {
 		dates = append(dates, date[0])
 		counter += 1
 	}
+	result["5"] = make(map[string][]string)
 	result["5"]["dates"] = dates
 
 	for _, date := range dates {
@@ -103,6 +104,7 @@ func Parse() []byte {
 			channelTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":Date:" + date + ":Quantity"
 			channelQuantity, channelQuantity_err := redis.Int(redisConn.Do("GET", channelTypeKey))
 			if channelQuantity_err != nil {
+				fmt.Println(channelQuantity_err)
 				panic("ERROR WITH CHANNEL WEEK QUANTITY")
 			}
 			channelWeekQuantity[channel] += channelQuantity
