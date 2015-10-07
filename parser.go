@@ -106,13 +106,13 @@ func Parse() []byte {
 	result["1"]["Value"] = append(result["1"]["Value"], strconv.Itoa(weekQuantity))
 	result["2"]["Value"] = append(result["2"]["Value"], strconv.Itoa(weekAmount))
 	// Event total quantity
-	eventTotalQuantityKey := "Organizer" + ORGANIZER + ":Event:" + EVENT + "TotalQuantity"
+	eventTotalQuantityKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":TotalQuantity"
 	totalQuantity, _ := redis.Int(redisConn.Do("GET", eventTotalQuantityKey))
 	result["3"]["Value"] = append(result["3"]["Value"], strconv.Itoa(totalQuantity))
 	// Event total amount
-	eventTotalAmountKey := "Organizer" + ORGANIZER + ":Event:" + EVENT + "TotalAmount"
+	eventTotalAmountKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":TotalAmount"
 	totalAmount, _ := redis.Int(redisConn.Do("GET", eventTotalAmountKey))
-	result["4"]["Value"] = append(result["4"]["Value"], strconv.Itoa(totalAmount))
+	result["4"]["Value"] = append(result["4"]["Value"], strconv.Itoa(totalAmount/100))
 	// Channel quantity distribution
 	for channel, channelName := range channelTypes {
 		result["6"][channelName] = append(result["6"][channelName], strconv.Itoa(channelWeekQuantity[channel]))
