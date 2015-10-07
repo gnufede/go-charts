@@ -97,7 +97,7 @@ func Parse() []byte {
 
 		for id, name := range ticketTypes {
 			// Get total quantity group by ticket type
-			ticketTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":TicketType:" + strconv.Itoa(id) + ":Date:" + date + ":Amount"
+			ticketTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":TicketType:" + strconv.Itoa(id) + ":Date:" + date + ":Quantity"
 			values, values_err := redis.Int(redisScript.Do(redisConn, ticketTypeKey))
 			if values_err != nil {
 				fmt.Println(values_err)
