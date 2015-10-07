@@ -105,7 +105,8 @@ func Parse() []byte {
 			channelQuantity, channelQuantity_err := redis.Int(redisConn.Do("GET", channelTypeKey))
 			if channelQuantity_err != nil {
 				fmt.Println(channelQuantity_err)
-				panic("ERROR WITH CHANNEL WEEK QUANTITY")
+				channelQuantity = 0
+				//panic("ERROR WITH CHANNEL WEEK QUANTITY")
 			}
 			channelWeekQuantity[channel] += channelQuantity
 		}
