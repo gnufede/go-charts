@@ -8,24 +8,24 @@
 
   <body>
     <ul>
-      <li class="ticket one" data-ticketid="1" data-price="2000">
+      <li class="ticket one" data-ticketid="1" data-channel="1" data-price="2000">
         Entrada general
-        <span class="price">20,00 €</span>  
-      </li>
-  
-      <li class="ticket two" data-ticketid="2" data-price="1000">
-        Entrada infantil
-        <span class="price">10,00 €</span>  
-      </li>
-     
-      <li class="ticket three" data-ticketid="3" data-price="1500">
-        Entrada jubilados
-        <span class="price">15,00 €</span>  
+        <span class="price">20,00 €</span>
       </li>
 
-      <li class="ticket four" data-ticketid="4" data-price="0">
+      <li class="ticket two" data-ticketid="2" data-channel="1" data-price="1000">
+        Entrada infantil
+        <span class="price">10,00 €</span>
+      </li>
+
+      <li class="ticket three" data-ticketid="3" data-channel="2" data-price="1500">
+        Entrada jubilados
+        <span class="price">15,00 €</span>
+      </li>
+
+      <li class="ticket four" data-ticketid="4" data-channel="3" data-price="0">
         Entrada gratuita
-        <span class="price">gratis</span>         
+        <span class="price">gratis</span>
       </li>
     </ul>
 
@@ -35,7 +35,8 @@
       $("li").click(function(event) {
         var ticket_id = event.toElement.dataset.ticketid;
         var price = event.toElement.dataset.price;
-        $.post("http://localhost:8080/update_ticket", {"ticket_id": ticket_id, "price": price});
+        var channel = event.toElement.dataset.channel;
+        $.post("http://localhost:8080/update_ticket", {"ticket_id": ticket_id, "price": price, "channel": channel});
       });
     });
   </script>

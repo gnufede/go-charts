@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -121,10 +120,11 @@ func time_str() string {
 
 func update_ticket(w http.ResponseWriter, r *http.Request) {
 	ticket_id := r.FormValue("ticket_id")
+	channelType := r.FormValue("channel")
 	price, _ := strconv.Atoi(r.FormValue("price"))
 	price_it64 := int64(price)
 
-	const fake_session_key = "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION
+	fake_session_key := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + channelType + ":Session:" + SESSION
 	fake_ticket_key := fake_session_key + ":TicketType:" + ticket_id + ":Date:" + date_str()
 
 	pipe := client.Pipeline()
@@ -136,12 +136,12 @@ func update_ticket(w http.ResponseWriter, r *http.Request) {
 	pipe.HIncrBy(fake_ticket_key, time_str(), 1)
 
 	// Increment ticket type
-
-	pipe.HIncrBy(fake_session_key+":Date:"+date_str()+":Quantity", time_str(), 1)
-	pipe.HIncrBy(fake_session_key+":Date:"+date_str()+":Amount", time_str(), price_it64)
-
 	pipe.HIncrBy(fake_ticket_key+":Quantity", time_str(), 1)
 	pipe.HIncrBy(fake_ticket_key+":Amount", time_str(), price_it64)
+
+	// Increment session quantity and amount
+	pipe.HIncrBy(fake_session_key+":Date:"+date_str()+":Quantity", time_str(), 1)
+	pipe.HIncrBy(fake_session_key+":Date:"+date_str()+":Amount", time_str(), price_it64)
 
 	// Increment event totals
 	const fake_event_key = "Organizer:" + ORGANIZER + ":Event:" + EVENT
@@ -149,7 +149,7 @@ func update_ticket(w http.ResponseWriter, r *http.Request) {
 	pipe.IncrBy(fake_event_key+":TotalAmount", price_it64)
 
 	// Increment event totals per channel
-	fake_channel_with_date_key := fake_event_key + ":Channel:" + CHANNEL + ":Date:" + date_str()
+	fake_channel_with_date_key := fake_event_key + ":Channel:" + channelType + ":Date:" + date_str()
 	pipe.IncrBy(fake_channel_with_date_key+":Quantity", 1)
 	pipe.IncrBy(fake_channel_with_date_key+":Amount", price_it64)
 
