@@ -70,14 +70,15 @@ func Parse() []byte {
 		counter += 1
 	}
 
-	result["5"]["dates"] = dates
+	result["5"]["date"] = dates
 
 	for _, date := range dates {
 		// Get total amount sales group by date
 		key := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":Date:" + date + ":Amount"
 		values, values_err := redis.Int(redisScript.Do(redisConn, key))
 		if values_err != nil {
-			panic(values_err)
+			fmt.Println(values_err)
+			values = 0
 		}
 		amounts = append(amounts, strconv.Itoa(values))
 		result["5"]["amount"] = amounts
@@ -89,7 +90,8 @@ func Parse() []byte {
 		key = "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":Date:" + date + ":Quantity"
 		dayQuantity, dayQuantity_err := redis.Int(redisScript.Do(redisConn, key))
 		if dayQuantity_err != nil {
-			panic(values_err)
+			fmt.Println(values_err)
+			dayQuantity = 0
 		}
 		weekQuantity += dayQuantity
 
@@ -98,7 +100,8 @@ func Parse() []byte {
 			ticketTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + CHANNEL + ":Session:" + SESSION + ":TicketType:" + strconv.Itoa(id) + ":Date:" + date + ":Amount"
 			values, values_err := redis.Int(redisScript.Do(redisConn, ticketTypeKey))
 			if values_err != nil {
-				panic(values_err)
+				fmt.Println(values_err)
+				values = 0
 			}
 			result["5"][name] = append(result["5"][name], strconv.Itoa(values))
 		}
@@ -107,9 +110,7 @@ func Parse() []byte {
 			channelTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":Date:" + date + ":Quantity"
 			channelQuantity, channelQuantity_err := redis.Int(redisConn.Do("GET", channelTypeKey))
 			if channelQuantity_err != nil {
-				fmt.Println(channelQuantity_err)
 				channelQuantity = 0
-				//panic("ERROR WITH CHANNEL WEEK QUANTITY")
 			}
 			channelWeekQuantity[channel] += channelQuantity
 		}
@@ -127,10 +128,8 @@ func Parse() []byte {
 	totalAmount, _ := redis.Int(redisConn.Do("GET", eventTotalAmountKey))
 	result["4"]["Value"] = append(result["4"]["Value"], strconv.Itoa(totalAmount))
 	// Channel quantity distribution
-	// for channel, channelName := range channelTypes {
-	for _, channelName := range channelTypes {
-		result["6"][channelName] = append(result["6"][channelName], strconv.Itoa(0))
-		// result["6"][channelName] = append(result["6"][channelName], strconv.Itoa(channelWeekQuantity[channel]))
+	for channel, channelName := range channelTypes {
+		result["6"][channelName] = append(result["6"][channelName], strconv.Itoa(channelWeekQuantity[channel]))
 	}
 
 	output, o_err := json.Marshal(result)
