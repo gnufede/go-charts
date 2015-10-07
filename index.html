@@ -20,28 +20,28 @@
       <div class="figures-box tickets-sold">
         <i class="fa fa-ticket"></i>
         <p class="figures-title">Sold tickets</p>
-        <p class="figures"><span class="number">10.250</span> tickets <span class="add-info">of 35.000 tickets (capacity)</span></p>
+        <p class="figures"><span id="tickets-sold-number" class="number">0</span> tickets <span class="add-info">of 35.000 tickets (capacity)</span></p>
       </div>
     </div>
     <div class="figures-section col-md-3">
       <div class="figures-box tickets-revenue">
         <i class="fa fa-dollar"></i>
         <p class="figures-title">Revenues</p>
-        <p class="figures"><span class="number">5.600,45</span> €</p>
+        <p class="figures"><span id="tickets-revenue-number" class="number">0,00</span> €</p>
       </div>
     </div>
     <div class="figures-section col-md-3">
       <div class="figures-box tickets-sold-amount">
         <i class="fa fa-ticket"></i>
         <p class="figures-title">Sold tickets <span class="add-info">accumulated</span></p>
-        <p class="figures"><span class="number">34.980</span> tickets <span class="add-info">de 35.000 tickets (capacity)</span></p>
+        <p class="figures"><span id="tickets-sold-amount" class="number">0</span> tickets <span class="add-info">de 35.000 tickets (capacity)</span></p>
       </div>
     </div>
     <div class="figures-section col-md-3">
       <div class="figures-box tickets-revenue-amount">
         <i class="fa fa-dollar"></i>
         <p class="figures-title">Revenues <span class="add-info">accumulated</span></p>
-        <p class="figures"><span class="number">1.256.000,45</span> €</p>
+        <p class="figures"><span id="tickets-revenue-amount" class="number">0,00</span> €</p>
       </div>
     </div>
   </div>
@@ -63,7 +63,7 @@
 
   <script src="js/d3.min.js" type="text/javascript"></script>
   <script src="js/c3.min.js" type="text/javascript"></script>
-  <!--script src="https://code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script-->
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script>
   <script type="text/javascript" src="js/charts.js"></script>
 </body>
 </html>

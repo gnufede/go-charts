@@ -6,9 +6,39 @@ function connect_websocket() {
     };
 
     ws.onmessage = function (evt) {
-        var stuff = JSON.parse(evt.data)["5"]
-        chart.load({json:stuff});
+        var stuff = JSON.parse(evt.data)
+        chart.load({json:stuff["5"]});
+        channel.load({json:stuff["6"]});
+//        $("#tickets-sold-number").text(stuff["1"].Value[0]);
+        update_value($("#tickets-sold-number"), stuff["1"].Value[0]);
+
     };
+}
+
+function update_value(element, new_value) {
+
+    var old_value = parseInt(element.text());
+    var new_value = parseInt(new_value);
+
+//    if (old_value == 0) {
+//        set_new_metric(element, new_value);
+//    } else {
+
+        $({metric: old_value}).animate({metric: new_value+1}, {
+            duration: 700,
+            easing:'swing',
+            step: function() {
+                set_new_metric(element, parseInt(this.metric));
+            }
+        });
+//    }
+}
+
+function set_new_metric($selector, metric) {
+    var locale_metric = metric.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+   // $selector.attr('data-value', metric);
+    $selector.text(locale_metric);
 }
 
 
@@ -96,11 +126,12 @@ var chart = c3.generate({
 var channel = c3.generate({
     bindto: '#donut',
     data: {
-        columns: [
-            ['boxoffice', 30],
-            ['online', 120],
-            ['iframe', 20]
-        ],
+        json: {},
+        //columns: [
+        //    ['boxoffice', 30],
+        //    ['online', 120],
+        //    ['iframe', 20]
+        //],
         type : 'donut',
         onclick: function (d, i) { console.log("onclick", d, i); },
         onmouseover: function (d, i) { console.log("onmouseover", d, i); },
