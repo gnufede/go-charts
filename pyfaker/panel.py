@@ -50,10 +50,10 @@ def update_sold_tickets():
   pipe.incrby(event_total_amount, 1)
   # Increment event total amount per channel
   event_channel_total_amount = 'Organizer:1:Event:1:Channel:1:Date:%(today)s:Amount' % locals()
-  pipe.incrby(event_channel_total_amount, datetime.now().strftime('%H:%M'), price)
+  pipe.incrby(event_channel_total_amount, price)
   # Increment event total quantity per channel
   event_channel_total_amount = 'Organizer:1:Event:1:Channel:1:Date:%(today)s:Quantity' % locals()
-  pipe.incrby(event_channel_total_amount, datetime.now().strftime('%H:%M'), 1)
+  pipe.incrby(event_channel_total_amount, 1)
 
 
   pipe.execute()

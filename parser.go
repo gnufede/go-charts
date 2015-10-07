@@ -120,7 +120,10 @@ func Parse() []byte {
 	eventTotalAmountKey := "Organizer" + ORGANIZER + ":Event:" + EVENT + "TotalAmount"
 	totalAmount, _ := redis.Int(redisConn.Do("GET", eventTotalAmountKey))
 	result["4"]["Value"] = append(result["4"]["Value"], strconv.Itoa(totalAmount))
-	// TODO: Channel quantity distribution
+	// Channel quantity distribution
+	for channel, channelName := range channelTypes {
+		result["6"][channelName] = append(result["6"][channelName], strconv.Itoa(channelWeekQuantity[channel]))
+	}
 
 	output, o_err := json.Marshal(result)
 	if o_err != nil {
