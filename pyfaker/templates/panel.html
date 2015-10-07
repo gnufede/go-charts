@@ -8,26 +8,45 @@
 
   <body>
     <ul>
-      <li class="ticket one" data-ticketid="1" data-channel="1" data-price="2000">
-        Entrada general
-        <span class="price">20,00 €</span>
+      <li class="ticket">
+        <a href="#" class="one" data-ticketid="1" data-price="2000">
+          <span class="push">Entrada general
+            <span class="price">20,00 €</span>
+          </span>
+        </a>
       </li>
-
-      <li class="ticket two" data-ticketid="2" data-channel="1" data-price="1000">
-        Entrada infantil
-        <span class="price">10,00 €</span>
+      <li class="ticket">
+        <a href="#" class="two" data-ticketid="2" data-price="1000">
+          <span class="push">Entrada infantil
+            <span class="price">10,00 €</span>
+          </span>
+        </a>
       </li>
-
-      <li class="ticket three" data-ticketid="3" data-channel="2" data-price="1500">
-        Entrada jubilados
-        <span class="price">15,00 €</span>
+      <li class="ticket">
+        <a href="#" class="three" data-ticketid="3" data-price="1500">
+          <span class="push">Entrada jubilados
+            <span class="price">15,00 €</span>
+          </span>
+        </a>
       </li>
-
-      <li class="ticket four" data-ticketid="4" data-channel="3" data-price="0">
-        Entrada gratuita
-        <span class="price">gratis</span>
+      <li class="ticket poor">
+        <a href="#" class="four" data-ticketid="4" data-price="0">
+          <span class="push">Entrada gratuita
+            <span class="price">gratis</span>
+          </span>
+        </a>
       </li>
     </ul>
+
+    <audio preload="auto" name="audiook">
+      <source src="/static/cash.mp3" type="audio/mp3" />
+      <source src="/static/cash.ogg" type="audio/ogg" />
+    </audio>
+
+    <audio preload="auto" name="audiopoor">
+      <source src="/static/boo.mp3" type="audio/mp3" />
+      <source src="/static/boo.ogg" type="audio/ogg" />
+    </audio>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script>
@@ -35,8 +54,15 @@
       $("li").click(function(event) {
         var ticket_id = event.toElement.dataset.ticketid;
         var price = event.toElement.dataset.price;
-        var channel = event.toElement.dataset.channel;
-        $.post("http://localhost:8080/update_ticket", {"ticket_id": ticket_id, "price": price, "channel": channel});
+        // var channel = event.toElement.dataset.channel;
+        // $.post("http://localhost:8080/update_ticket", {"ticket_id": ticket_id, "price": price, "channel": channel});
+        $.post("/update_ticket", {"ticket_id": ticket_id, "price": price});
+        if ($(this).hasClass('poor')) {
+          document.getElementsByTagName('audio')[1].play();
+        } else {
+          document.getElementsByTagName('audio')[0].play();
+        }
+        return false;
       });
     });
   </script>
