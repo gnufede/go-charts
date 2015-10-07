@@ -39,13 +39,13 @@
     </ul>
 
     <audio preload="auto" name="audiook">
-      <source src="/static/cash.mp3" type="audio/mp3" />
-      <source src="/static/cash.ogg" type="audio/ogg" />
+      <source src="/sounds/cash.mp3" type="audio/mp3" />
+      <source src="/sounds/cash.ogg" type="audio/ogg" />
     </audio>
 
     <audio preload="auto" name="audiopoor">
-      <source src="/static/boo.mp3" type="audio/mp3" />
-      <source src="/static/boo.ogg" type="audio/ogg" />
+      <source src="/sounds/boo.mp3" type="audio/mp3" />
+      <source src="/sounds/boo.ogg" type="audio/ogg" />
     </audio>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -54,9 +54,9 @@
       $("li").click(function(event) {
         var ticket_id = event.toElement.dataset.ticketid;
         var price = event.toElement.dataset.price;
-        // var channel = event.toElement.dataset.channel;
-        // $.post("http://localhost:8080/update_ticket", {"ticket_id": ticket_id, "price": price, "channel": channel});
-        $.post("/update_ticket", {"ticket_id": ticket_id, "price": price});
+        var channel = event.toElement.dataset.channel;
+
+        $.post("/update_ticket", {"ticket_id": ticket_id, "price": price, "channel": channel});
         if ($(this).hasClass('poor')) {
           document.getElementsByTagName('audio')[1].play();
         } else {
