@@ -6,7 +6,8 @@ function connect_websocket() {
     };
 
     ws.onmessage = function (evt) {
-        chart.load({json:JSON.parse(evt.data["5"])});
+        var stuff = JSON.parse(evt.data)["5"]
+        chart.load({json:stuff});
     };
 }
 
