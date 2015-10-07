@@ -38,6 +38,23 @@ def update_sold_tickets():
   # Add price to ticket type total amount
   ticket_type_amount_key = '%(fake_begin_key)s:TicketType:%(ticket_id)s:Date:%(today)s:Amount' % locals()
   pipe.hincrby(ticket_type_amount_key, datetime.now().strftime('%H:%M'), price)
+  # Add price to ticket type total amount
+  ticket_type_amount_key = '%(fake_begin_key)s:TicketType:%(ticket_id)s:Date:%(today)s:Quantity' % locals()
+  pipe.hincrby(ticket_type_amount_key, datetime.now().strftime('%H:%M'), 1)
+
+  # Increment event total amount
+  event_total_amount = 'Organizer:1:Event:1:TotalAmount'
+  pipe.incrby(event_total_amount, price)
+  # Increment event total quantity
+  event_total_amount = 'Organizer:1:Event:1:TotalQuantity'
+  pipe.incrby(event_total_amount, 1)
+  # Increment event total amount per channel
+  event_channel_total_amount = 'Organizer:1:Event:1:Channel:1:Date:%(today)s:Amount' % locals()
+  pipe.incrby(event_channel_total_amount, datetime.now().strftime('%H:%M'), price)
+  # Increment event total quantity per channel
+  event_channel_total_amount = 'Organizer:1:Event:1:Channel:1:Date:%(today)s:Quantity' % locals()
+  pipe.incrby(event_channel_total_amount, datetime.now().strftime('%H:%M'), 1)
+
 
   pipe.execute()
 
