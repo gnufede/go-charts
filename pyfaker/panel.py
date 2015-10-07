@@ -30,17 +30,12 @@ def update_sold_tickets():
   tickets_quantity_key = '%(fake_begin_key)s:Date:%(today)s' % locals()
   pipe.hincrby(tickets_quantity_key, datetime.now().strftime('%H:%M'), 1)
 
-  # Add ticket to ticket type quantity
-  #ticket_type_quantity_key = '%(fake_begin_key)s:TicketType:%(today)s:%(ticket_id)s:quantity' % locals()
-  ticket_type_quantity_key = '%(fake_begin_key)s:TicketType:%(ticket_id)s:Date:%(today)s' % locals()
-  pipe.hincrby(ticket_type_quantity_key, datetime.now().strftime('%H:%M'), 1)
-
   # Add price to ticket type total amount
   ticket_type_amount_key = '%(fake_begin_key)s:TicketType:%(ticket_id)s:Date:%(today)s:Amount' % locals()
   pipe.hincrby(ticket_type_amount_key, datetime.now().strftime('%H:%M'), price)
   # Add price to ticket type total amount
   ticket_type_quantity_key = '%(fake_begin_key)s:TicketType:%(ticket_id)s:Date:%(today)s:Quantity' % locals()
-  pipe.hincrby(ticket_type_amount_key, datetime.now().strftime('%H:%M'), 1)
+  pipe.hincrby(ticket_type_quantity_key, datetime.now().strftime('%H:%M'), 1)
 
   # Increment event session date amount
   event_session_amount_key = '%(fake_begin_key)s:Date:%(today)s:Amount' % locals()

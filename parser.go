@@ -37,6 +37,7 @@ func Parse() []byte {
             sum = sum + tonumber(val)
         end
 
+        redis.log(redis.LOG_WARNING, "SUM TOTAL ".. KEYS[1] .. ":" .. sum)
         return sum
     `
 
