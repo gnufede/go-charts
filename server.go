@@ -120,6 +120,7 @@ func time_str() string {
 func update_ticket(w http.ResponseWriter, r *http.Request) {
 	ticket_id := r.FormValue("ticket_id")
 	channelType := r.FormValue("channel")
+
 	price, _ := strconv.Atoi(r.FormValue("price"))
 	price_it64 := int64(price)
 
@@ -157,7 +158,6 @@ func update_ticket(w http.ResponseWriter, r *http.Request) {
 	client.Publish("1", "lets_go")
 }
 
-
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
@@ -170,13 +170,12 @@ func main() {
 	}
 }
 
-
 func configure_routes() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
- 	    http.ServeFile(w, r, "index.html")
+		http.ServeFile(w, r, "index.html")
 	})
 	http.HandleFunc("/gofaker", func(w http.ResponseWriter, r *http.Request) {
- 	    http.ServeFile(w, r, "pyfaker/templates/panel.html")
+		http.ServeFile(w, r, "pyfaker/templates/panel.html")
 	})
 
 	http.HandleFunc("/update_ticket", update_ticket)
