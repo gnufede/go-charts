@@ -59,17 +59,17 @@ var chart = c3.generate({
         hide: ["total tickets"],
         mimeType: 'json',
         color: {
-            amount: ['#495559']
+            Amount: ['#495559']
         },
         axes: {
-            amount: 'y2'
+            Amount: 'y2'
         },
         type: 'bar',
         types: {
-            amount: 'line'
+            Amount: 'line'
         },
         groups: [
-            ['children tickets', 'adult tickets']
+            ['General', 'Infantil', 'Jubilados', 'Gratuita']
         ],
     },
     axis: {
@@ -102,7 +102,7 @@ var chart = c3.generate({
     tooltip: {
         format: {
             value: function (value, ratio, id) {
-                if(id === 'amount'){
+                if(id === 'Amount'){
                     var format = d3.format('');
                     return format(value) + '€';
                 }else{

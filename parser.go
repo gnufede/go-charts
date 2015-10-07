@@ -85,7 +85,7 @@ func Parse() []byte {
 			values = 0
 		}
 		amounts = append(amounts, strconv.Itoa(values/100))
-		result["5"]["amount"] = amounts
+		result["5"]["Amount"] = amounts
 
 		// Increment week amount
 		weekAmount += values
