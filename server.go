@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/rs/cors" // used for fuck the cors rules :)
 	"strconv"
 	"time"
 
@@ -158,17 +157,28 @@ func update_ticket(w http.ResponseWriter, r *http.Request) {
 	client.Publish("1", "lets_go")
 }
 
+
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/update_ticket", update_ticket)
-	mux.HandleFunc("/ws", sendData)
-	handlerCors := cors.Default().Handler(mux)
+	configure_routes()
 
-	if err := http.ListenAndServe(*addr, handlerCors); err != nil {
+	if err := http.ListenAndServe(*addr, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 		client.Close()
 	}
+}
+
+
+func configure_routes() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+ 	    http.ServeFile(w, r, "index.html")
+	})
+	http.HandleFunc("/gofaker", func(w http.ResponseWriter, r *http.Request) {
+ 	    http.ServeFile(w, r, "pyfaker/templates/panel.html")
+	})
+
+	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
+	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("js"))))
 }
