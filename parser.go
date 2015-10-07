@@ -109,7 +109,7 @@ func Parse() []byte {
 
 		for channel, _ := range channelTypes {
 			channelTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":Date:" + date + ":Quantity"
-			channelQuantity, channelQuantity_err := redis.Int(redisConn.Do("GET", channelTypeKey))
+			channelQuantity, channelQuantity_err := redis.Int(redisScript.Do(redisConn, channelTypeKey))
 			if channelQuantity_err != nil {
 				channelQuantity = 0
 			}
