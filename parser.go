@@ -43,6 +43,9 @@ func Parse() []byte {
 
 	ticketTypes := make(map[int]string)
 	ticketTypes[1] = "General"
+	ticketTypes[1] = "Infantil"
+	ticketTypes[1] = "Jubilados"
+	ticketTypes[1] = "Gratuita"
 	channelTypes := make(map[int]string)
 	channelTypes[1] = "Online"
 	channelTypes[2] = "BoxOffice"
@@ -118,6 +121,8 @@ func Parse() []byte {
 	}
 
 	// Week amount and quantity
+	fmt.Println("Previus week amount")
+	fmt.Println(weekAmount)
 	result["1"]["Value"] = append(result["1"]["Value"], strconv.Itoa(weekQuantity))
 	result["2"]["Value"] = append(result["2"]["Value"], strconv.Itoa(weekAmount))
 	// Event total quantity
