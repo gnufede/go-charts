@@ -38,29 +38,39 @@
       </li>
     </ul>
 
-    <audio preload="auto">
-      <source src="https://github.com/nclud/2011.beercamp.com/blob/gh-pages/audio/inception.mp3?raw=true" type="audio/mp3" />
-      <source src="https://github.com/nclud/2011.beercamp.com/blob/gh-pages/audio/inception.ogg?raw=true" type="audio/ogg" />
+    <audio id="welcome" preload="auto">
+      <source src="/sounds/welcome.mp3" type="audio/mp3" />
+      <source src="/sounds/welcome.mp3" type="audio/ogg" />
     </audio>
 
-    <audio preload="auto" name="audiook">
+    <audio id="coin" preload="auto" name="audiook">
       <source src="/sounds/smb3_coin.mp3" type="audio/mp3" />
       <source src="/sounds/smb3_coin.ogg" type="audio/ogg" />
     </audio>
 
-    <audio preload="auto" name="audiopoor">
+    <audio id="free" preload="auto" name="audiopoor">
       <source src="/sounds/smb3_power-up.mp3" type="audio/mp3" />
       <source src="/sounds/smb3_power-up.ogg" type="audio/ogg" />
     </audio>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script>
+    function play(audioId) {
+      var audio = document.getElementById(audioId)
+      if (audio.paused) {
+          audio.play();
+      } else {
+          audio.currentTime = 0
+      }
+    }
+
     $(document).ready(function(){
-      document.getElementsByTagName('audio')[0].play();
+      play('welcome');
       $('.ticket').each(function(){
           $(this).addClass('loaded');
       });
     });
+
     $(function(){
       $("a").click(function(event) {
         var ticket_id = $(event.currentTarget).attr("data-ticketid")
@@ -69,10 +79,9 @@
 
         $.post("/update_ticket", {"ticket_id": ticket_id, "price": price, "channel": channel});
         if ($(this).hasClass('poor')) {
-          debugger
-          document.getElementsByTagName('audio')[2].play();
+          play('free');
         } else {
-          document.getElementsByTagName('audio')[1].play();
+          play('coin');
         }
         return false;
       });

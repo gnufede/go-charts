@@ -44,11 +44,7 @@ function set_new_metric($selector, metric) {
 }
 
 
-var toggled = true;
 var chart = c3.generate({
-    // color: {
-    //     pattern: ['#495559', '#5ca648', '#A8DADC', '#C8E9A0', '#F7A278', '#413C58', '#FF7E6B', '#F9DF99', '#D6D1B1', '#B8F2E6']
-    // },
     size: {
         height: 342
     },
@@ -56,19 +52,9 @@ var chart = c3.generate({
         x: 'minutes',
         xFormat: '%H:%M',
         json: {},
-        onclick: function (d, i) {
-            if (toggled) {
-                chart.toggle("General");
-                chart.toggle("Gratuita");
-                chart.toggle("Infantil");
-                chart.toggle("Jubilados");
-                chart.toggle("Total");
-            }
-            toggled = !toggled;
-        },
         hide: ["Total"],
         mimeType: 'json',
-        color: {
+        colors: {
             Amount: ['#495559'],
             General: ['#71B7C4'],
             Infantil: ['#E9854A'],
@@ -86,6 +72,17 @@ var chart = c3.generate({
         groups: [
             ['General', 'Infantil', 'Jubilados', 'Gratuita']
         ],
+    },
+    legend: {
+         item: {
+            onclick: function (d, i) {
+                chart.toggle("General");
+                chart.toggle("Gratuita");
+                chart.toggle("Infantil");
+                chart.toggle("Jubilados");
+                chart.toggle("Total");
+            },
+        },
     },
     axis: {
         x: {
