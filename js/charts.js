@@ -45,18 +45,23 @@ var chart = c3.generate({
     color: {
         pattern: ['#495559', '#5ca648', '#A8DADC', '#C8E9A0', '#F7A278', '#413C58', '#FF7E6B', '#F9DF99', '#D6D1B1', '#B8F2E6']
     },
+    size: {
+        height: 342
+    },
     data: {
         x: 'date',
         json: {},
         onclick: function (d, i) {
             if (toggled) {
-                chart.toggle("children tickets");
-                chart.toggle("adult tickets");
-                chart.toggle("total tickets");
+                chart.toggle("General");
+                chart.toggle("Gratuita");
+                chart.toggle("Infantil");
+                chart.toggle("Jubilados");
+                chart.toggle("Total");
             }
             toggled = !toggled;
         },
-        hide: ["total tickets"],
+        hide: ["Total"],
         mimeType: 'json',
         color: {
             Amount: ['#495559']
@@ -130,13 +135,9 @@ var channel = c3.generate({
         //    ['online', 120],
         //    ['iframe', 20]
         //],
-        type : 'donut',
-        onclick: function (d, i) { console.log("onclick", d, i); },
-        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+        type : 'donut'
     },
     donut: {
-        title: "Total tickets",
         label: {
             format: function (value, ratio, id) {
                 return d3.format()(value);
@@ -144,8 +145,6 @@ var channel = c3.generate({
         }
     }
 });
-
-d3.select('.container')
 
 connect_websocket();
 
