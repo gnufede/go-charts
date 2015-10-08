@@ -152,7 +152,7 @@ func update_ticket(w http.ResponseWriter, r *http.Request) {
 
 	pipe.Exec()
 
-	client.Publish("1", "lets_go")
+//	client.Publish("1", "lets_go")
 }
 
 func main() {
@@ -170,9 +170,15 @@ func main() {
 }
 
 func update_data() {
-	c := time.Tick(1 * time.Minute)
+	c := time.Tick(500 * time.Millisecond)
+	last_data := []byte
 	for range c {
-		client.Publish("1", "lets_go")
+		data := Parse()
+
+		if (reflect.DeepEqual(m1, m2))) {
+			client.Publish("1", "lets_go")
+		}
+	  last_data := data
 	}
 }
 

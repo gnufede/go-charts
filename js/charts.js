@@ -19,11 +19,19 @@ function connect_websocket() {
         update_value($("#tickets-revenue-amount"),stuff["4"].Value[0]);
         update_value($("#donut-amount"),stuff["1"].Value[0]);
 
+
+        /*
+        $("#tickets-sold-number").text(stuff["1"].Value[0]);
+        $("#tickets-revenue-number").text(stuff["2"].Value[0]);
+        $("#tickets-sold-amount").text(stuff["3"].Value[0]);
+        $("#tickets-revenue-amount").text(stuff["4"].Value[0]);
+        $("#donut-amount").text(stuff["1"].Value[0]);
+        */
+
     };
 
     $("#week-or-not").click(
         function(event) {
-            debugger;
             if (week_or_not) {
                 $("#chart_week").hide();
                 $("#chart_5m").show();
@@ -44,7 +52,7 @@ function update_value(element, new_value) {
     var new_value = parseInt(new_value);
 
     $({metric: old_value}).animate({metric: new_value}, {
-        duration: 700,
+        duration: 499,
         easing:'swing',
         step: function() {
             set_new_metric(element, parseInt(this.metric));
@@ -97,11 +105,11 @@ var chart_5m = c3.generate({
     legend: {
          item: {
             onclick: function (d, i) {
-                chart.toggle("General");
-                chart.toggle("Gratuita");
-                chart.toggle("Infantil");
-                chart.toggle("Jubilados");
-                chart.toggle("Total");
+                chart_5m.toggle("General");
+                chart_5m.toggle("Gratuita");
+                chart_5m.toggle("Infantil");
+                chart_5m.toggle("Jubilados");
+                chart_5m.toggle("Total");
             },
         },
     },
@@ -187,11 +195,11 @@ var chart_week = c3.generate({
     legend: {
          item: {
             onclick: function (d, i) {
-                chart.toggle("General");
-                chart.toggle("Gratuita");
-                chart.toggle("Infantil");
-                chart.toggle("Jubilados");
-                chart.toggle("Total");
+                chart_week.toggle("General");
+                chart_week.toggle("Gratuita");
+                chart_week.toggle("Infantil");
+                chart_week.toggle("Jubilados");
+                chart_week.toggle("Total");
             },
         },
     },
@@ -258,8 +266,10 @@ var channel = c3.generate({
     donut: {
         label: {
             format: function (value, ratio, id) {
-                return d3.format()(value);
-            }
+               return d3.format()(value);
+            },
+            threshold: 0
+
         }
     }
 });
