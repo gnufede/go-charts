@@ -2,16 +2,13 @@ package main
 
 import (
 	"flag"
-	"log"
-	"net/http"
-	"strings"
-
-	"strconv"
-	"time"
-
-	//"net/url"
 	"github.com/gorilla/websocket"
 	"gopkg.in/redis.v3"
+	"log"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
 )
 
 var (
