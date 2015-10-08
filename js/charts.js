@@ -1,13 +1,17 @@
+var week_or_not = true;
+
 function connect_websocket() {
     var ws = new WebSocket("ws://localhost:8080/ws?organizer=1");
+    var stuff;
 
     ws.onclose = function(){
         setTimeout(function(){connect_websocket()}, 5000);
     };
 
     ws.onmessage = function (evt) {
-        var stuff = JSON.parse(evt.data)
-        chart.load({json:stuff["7"]});
+        stuff = JSON.parse(evt.data)
+        chart_week.load({json:stuff["5"]});
+        chart_5m.load({json:stuff["7"]});
         channel.load({json:stuff["6"]});
         update_value($("#tickets-sold-number"), stuff["1"].Value[0]);
         update_value($("#tickets-revenue-number"),stuff["2"].Value[0]);
@@ -16,6 +20,22 @@ function connect_websocket() {
         update_value($("#donut-amount"),stuff["1"].Value[0]);
 
     };
+
+    $("#week-or-not").click(
+        function(event) {
+            debugger;
+            if (week_or_not) {
+                $("#chart_week").hide();
+                $("#chart_5m").show();
+            }
+            else {
+                $("#chart_week").show();
+                $("#chart_5m").hide();
+            }
+            week_or_not = !week_or_not;
+            $("#week_or_not").text("Change to 5 min");
+        }
+    );
 }
 
 function update_value(element, new_value) {
@@ -44,7 +64,8 @@ function set_new_metric($selector, metric) {
 }
 
 
-var chart = c3.generate({
+var chart_5m = c3.generate({
+    bindto: '#chart_5m',
     size: {
         height: 342
     },
@@ -89,6 +110,96 @@ var chart = c3.generate({
             type: 'timeseries',
             tick: {
                 format: '%H:%M'
+            }
+        },
+        y: {
+            label: {
+                text: 'Sold tickets',
+                position: 'outer-center'
+            }
+        },
+        y2: {
+            show: true,
+            tick: {
+                format: function(value){
+                    var format = d3.format();
+                    return format(value) + '€';
+                }
+            },
+            label: {
+                text: 'Revenues',
+                position: 'outer-center'
+            }
+        }
+    },
+    tooltip: {
+        format: {
+            value: function (value, ratio, id) {
+                if(id === 'Amount'){
+                    var format = d3.format('');
+                    return format(value) + '€';
+                }else{
+                    return value;
+                }
+            }
+        }
+    },
+    point: {
+      r: 8,
+      focus: {
+        expand: {
+          r: 10
+        }
+      }
+    }
+});
+
+var chart_week = c3.generate({
+    bindto: '#chart_week',
+    size: {
+        height: 342
+    },
+    data: {
+        x: 'date',
+        xFormat: '%Y-%m-%d',
+        json: {},
+        hide: ["Total"],
+        mimeType: 'json',
+        colors: {
+            Amount: ['#495559'],
+            General: ['#71B7C4'],
+            Infantil: ['#E9854A'],
+            Jubilados: ['#ACCA86'],
+            Gratuita: ['#FBDD8D'],
+            Total: ['#71B7C4']
+        },
+        axes: {
+            Amount: 'y2'
+        },
+        type: 'bar',
+        types: {
+            Amount: 'line'
+        },
+        groups: [
+            ['General', 'Infantil', 'Jubilados', 'Gratuita']
+        ],
+    },
+    legend: {
+         item: {
+            onclick: function (d, i) {
+                chart.toggle("General");
+                chart.toggle("Gratuita");
+                chart.toggle("Infantil");
+                chart.toggle("Jubilados");
+                chart.toggle("Total");
+            },
+        },
+    },
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: '%Y-%m-%d',
             }
         },
         y: {
