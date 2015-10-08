@@ -7,7 +7,7 @@ function connect_websocket() {
 
     ws.onmessage = function (evt) {
         var stuff = JSON.parse(evt.data)
-        chart.load({json:stuff["5"]});
+        chart.load({json:stuff["7"]});
         channel.load({json:stuff["6"]});
         $("#tickets-sold-number").text(stuff["1"].Value[0]);
         $("#tickets-revenue-number").text(stuff["2"].Value[0]);
@@ -49,7 +49,8 @@ var chart = c3.generate({
         height: 342
     },
     data: {
-        x: 'date',
+        x: 'minutes',
+        xFormat: '%H:%M',
         json: {},
         onclick: function (d, i) {
             if (toggled) {
@@ -86,7 +87,7 @@ var chart = c3.generate({
         x: {
             type: 'timeseries',
             tick: {
-                format: '%H : %M'
+                format: '%H:%M'
             }
         },
         y: {

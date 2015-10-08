@@ -59,6 +59,7 @@ func Parse() []byte {
 
 	var dates []string
 	var minutes []string
+	var minutesShow []string
 
 	weekAmount := 0
 	weekQuantity := 0
@@ -79,13 +80,15 @@ func Parse() []byte {
 
 	start := time.Now()
 	minutes = append(minutes, start.Format("15:04"))
+	minutesShow = append(minutesShow, start.Format("15:04"))
 	for i := 0; i < 4; i++ {
 		start = start.Add(-1 * time.Minute)
 		minutes = append(minutes, start.Format("15:04"))
+		minutesShow = append(minutesShow, start.Format("15:04"))
 	}
 
 	result["5"]["date"] = dates
-	result["7"]["minutes"] = minutes
+	result["7"]["minutes"] = minutesShow
 
 	for _, date := range dates {
 		valueA := getChannelDataTotals(date, "Amount", channelTypes, redisScript, redisConn)
