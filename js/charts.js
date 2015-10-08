@@ -13,6 +13,7 @@ function connect_websocket() {
         $("#tickets-revenue-number").text(stuff["2"].Value[0]);
         $("#tickets-sold-amount").text(stuff["3"].Value[0]);
         $("#tickets-revenue-amount").text(stuff["4"].Value[0]);
+        $("#donut-amount").text(stuff["1"].Value[0]);
 //        update_value($("#tickets-sold-number"), stuff["1"].Value[0]);
 
     };
