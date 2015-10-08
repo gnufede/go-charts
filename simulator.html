@@ -38,6 +38,11 @@
       </li>
     </ul>
 
+    <audio preload="auto">
+      <source src="https://github.com/nclud/2011.beercamp.com/blob/gh-pages/audio/inception.mp3?raw=true" type="audio/mp3" />
+      <source src="https://github.com/nclud/2011.beercamp.com/blob/gh-pages/audio/inception.ogg?raw=true" type="audio/ogg" />
+    </audio>
+
     <audio preload="auto" name="audiook">
       <source src="/sounds/smb3_coin.mp3" type="audio/mp3" />
       <source src="/sounds/smb3_coin.ogg" type="audio/ogg" />
@@ -50,6 +55,12 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script>
+    $(document).ready(function(){
+      document.getElementsByTagName('audio')[0].play();
+      $('.ticket').each(function(){
+          $(this).addClass('loaded');
+      });
+    });
     $(function(){
       $("a").click(function(event) {
         var ticket_id = event.toElement.parentElement.dataset.ticketid;
@@ -59,9 +70,9 @@
         $.post("/update_ticket", {"ticket_id": ticket_id, "price": price, "channel": channel});
         if ($(this).hasClass('poor')) {
           debugger
-          document.getElementsByTagName('audio')[1].play();
+          document.getElementsByTagName('audio')[2].play();
         } else {
-          document.getElementsByTagName('audio')[0].play();
+          document.getElementsByTagName('audio')[1].play();
         }
         return false;
       });

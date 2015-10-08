@@ -66,11 +66,11 @@ var chart = c3.generate({
         mimeType: 'json',
         color: {
             Amount: ['#495559'],
-            General: ['#A8DADC'],
-            Infantil: ['#495559'],
-            Jubilados: ['#495559'],
-            Gratuita: ['#495559'],
-            Total: ['#495559'],
+            General: ['#71B7C4'],
+            Infantil: ['#E9854A'],
+            Jubilados: ['#E9854A'],
+            Gratuita: ['#FBDD8D'],
+            Total: ['#71B7C4']
         },
         axes: {
             Amount: 'y2'
