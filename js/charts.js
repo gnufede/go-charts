@@ -9,34 +9,37 @@ function connect_websocket() {
         var stuff = JSON.parse(evt.data)
         chart.load({json:stuff["7"]});
         channel.load({json:stuff["6"]});
-        $("#tickets-sold-number").text(stuff["1"].Value[0]);
-        $("#tickets-revenue-number").text(stuff["2"].Value[0]);
-        $("#tickets-sold-amount").text(stuff["3"].Value[0]);
-        $("#tickets-revenue-amount").text(stuff["4"].Value[0]);
-        $("#donut-amount").text(stuff["1"].Value[0]);
-//        update_value($("#tickets-sold-number"), stuff["1"].Value[0]);
+        update_value($("#tickets-sold-number"), stuff["1"].Value[0]);
+        update_value($("#tickets-revenue-number"),stuff["2"].Value[0]);
+        update_value($("#tickets-sold-amount"),stuff["3"].Value[0]);
+        update_value($("#tickets-revenue-amount"),stuff["4"].Value[0]);
+        update_value($("#donut-amount"),stuff["1"].Value[0]);
 
     };
 }
 
 function update_value(element, new_value) {
 
-    var old_value = parseInt(element.text());
+    var old_value = parseInt(element.attr('data-value')) || 0 ; //parseInt(element.text());
     var new_value = parseInt(new_value);
 
-    $({metric: old_value}).animate({metric: new_value+1}, {
+    $({metric: old_value}).animate({metric: new_value}, {
         duration: 700,
         easing:'swing',
         step: function() {
             set_new_metric(element, parseInt(this.metric));
+        },
+        complete: function() {
+            set_new_metric(element, new_value);
         }
+
     });
 }
 
 function set_new_metric($selector, metric) {
     var locale_metric = metric.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-   // $selector.attr('data-value', metric);
+    $selector.attr('data-value', metric);
     $selector.text(locale_metric);
 }
 

@@ -63,9 +63,9 @@
     });
     $(function(){
       $("a").click(function(event) {
-        var ticket_id = event.toElement.parentElement.dataset.ticketid;
-        var price = event.toElement.parentElement.dataset.price;
-        var channel = event.toElement.parentElement.dataset.channel;
+        var ticket_id = $(event.currentTarget).attr("data-ticketid")
+        var price = $(event.currentTarget).attr("data-price")
+        var channel = $(event.currentTarget).attr("data-channel")
 
         $.post("/update_ticket", {"ticket_id": ticket_id, "price": price, "channel": channel});
         if ($(this).hasClass('poor')) {
