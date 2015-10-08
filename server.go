@@ -164,9 +164,18 @@ func main() {
 
 	configure_routes()
 
+	go update_data()
+
 	if err := http.ListenAndServe(*addr, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 		client.Close()
+	}
+}
+
+func update_data() {
+	c := time.Tick(1 * time.Minute)
+	for range c {
+		client.Publish("1", "lets_go")
 	}
 }
 
