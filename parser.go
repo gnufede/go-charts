@@ -78,16 +78,16 @@ func Parse() []byte {
 	result["5"]["date"] = dates
 
 	for _, date := range dates {
-		value := getChannelDataTotals(date, "Amount", channelTypes, redisScript, redisConn)
-		sessionAmount := value / 100
+		valueA := getChannelDataTotals(date, "Amount", channelTypes, redisScript, redisConn)
+		sessionAmount := valueA / 100
 		result["5"]["Amount"] = append(result["5"]["Amount"], strconv.Itoa(sessionAmount))
 
 		// Increment week amount
 		weekAmount += sessionAmount
 
-		value = getChannelDataTotals(date, "Quantity", channelTypes, redisScript, redisConn)
-		sessionQuantity := value
-		result["5"]["Amount"] = append(result["5"]["Amount"], strconv.Itoa(sessionQuantity))
+		valueQ := getChannelDataTotals(date, "Quantity", channelTypes, redisScript, redisConn)
+		sessionQuantity := valueQ
+//		result["5"]["Amount"] = append(result["5"]["Amount"], strconv.Itoa(sessionQuantity))
 		weekQuantity += sessionQuantity
 
 		for id, name := range ticketTypes {
