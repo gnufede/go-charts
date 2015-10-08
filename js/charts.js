@@ -42,9 +42,9 @@ function set_new_metric($selector, metric) {
 
 var toggled = true;
 var chart = c3.generate({
-    color: {
-        pattern: ['#495559', '#5ca648', '#A8DADC', '#C8E9A0', '#F7A278', '#413C58', '#FF7E6B', '#F9DF99', '#D6D1B1', '#B8F2E6']
-    },
+    // color: {
+    //     pattern: ['#495559', '#5ca648', '#A8DADC', '#C8E9A0', '#F7A278', '#413C58', '#FF7E6B', '#F9DF99', '#D6D1B1', '#B8F2E6']
+    // },
     size: {
         height: 342
     },
@@ -64,7 +64,12 @@ var chart = c3.generate({
         hide: ["Total"],
         mimeType: 'json',
         color: {
-            Amount: ['#495559']
+            Amount: ['#495559'],
+            General: ['#A8DADC'],
+            Infantil: ['#495559'],
+            Jubilados: ['#495559'],
+            Gratuita: ['#495559'],
+            Total: ['#495559'],
         },
         axes: {
             Amount: 'y2'
@@ -81,7 +86,7 @@ var chart = c3.generate({
         x: {
             type: 'timeseries',
             tick: {
-                format: '%d-%m-%Y'
+                format: '%H : %M'
             }
         },
         y: {
