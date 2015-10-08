@@ -58,7 +58,7 @@ var chart = c3.generate({
             Amount: ['#495559'],
             General: ['#71B7C4'],
             Infantil: ['#E9854A'],
-            Jubilados: ['#E9854A'],
+            Jubilados: ['#ACCA86'],
             Gratuita: ['#FBDD8D'],
             Total: ['#71B7C4']
         },
@@ -137,12 +137,12 @@ var channel = c3.generate({
     bindto: '#donut',
     data: {
         json: {},
-        //columns: [
-        //    ['boxoffice', 30],
-        //    ['online', 120],
-        //    ['iframe', 20]
-        //],
-        type : 'donut'
+        type : 'donut',
+        colors: {
+            BoxOffice: ['#71B7C4'],
+            IFrame: ['#E9854A'],
+            Online: ['#ACCA86']
+        },
     },
     donut: {
         label: {

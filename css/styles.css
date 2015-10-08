@@ -3,12 +3,26 @@ body {
   background-color: #ededed;
 }
 
+.navbar-default {
+  background: #F2600F;
+  border: none;
+}
+
+.navbar-default .navbar-nav>li>a {
+  color: #fff;
+}
+
+#sidebar-menu>ul {
+  margin-top: 5px;
+}
+
 .main-title {
   font-size: 33px;
   line-height: 26px;
   color: #333;
   margin-bottom: 30px;
   font-weight: 400;
+  margin-top: 0;
 }
 
 .css-table {
@@ -51,21 +65,32 @@ body {
 
 .info-figures {
   margin-bottom: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 
 .figures-section {
   box-sizing: border-box;
   padding: 0 10px;
   margin-bottom: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
 }
 
 .figures-box {
-  height: 162px;
   color: #fff;
   padding: 20px;
   font-size: 20px;
   border-radius: 2px;
   position: relative;
+  width: 100%;
 }
 
 .figures-box .fa {
@@ -125,6 +150,7 @@ body {
 .figures .add-info {
   display: block;
   font-weight: normal;
+  line-height: 23px;
 }
 
 .chart-box {
@@ -173,9 +199,6 @@ body {
 }
 
 @media (max-width: 1200px){
-  .figures-box {
-    height: 152px;
-  }
 
   .figures-box {
     font-size: 16px;
