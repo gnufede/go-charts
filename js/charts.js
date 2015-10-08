@@ -132,6 +132,10 @@ return c3.generate({
             label: {
                 text: 'Revenues',
                 position: 'outer-center'
+            },
+            min: 0,
+            padding: {
+              bottom: 0
             }
         }
     },

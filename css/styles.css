@@ -16,6 +16,10 @@ body {
   margin-top: 5px;
 }
 
+.logo h1 img {
+  margin-top: 0;
+}
+
 .main-title {
   font-size: 33px;
   line-height: 26px;
