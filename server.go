@@ -87,25 +87,8 @@ func sendData(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func leadingZeros(origin int) string {
-	origin_str := strconv.FormatInt(int64(origin), 10)
-
-	if len(origin_str) == 1 {
-		return "0" + origin_str
-	}
-	return origin_str
-}
-
 func date_str() string {
-	t := time.Now()
-
-	result := strconv.FormatInt(int64(t.Year()), 10)
-	result += "-"
-	result += leadingZeros(int(t.Month()))
-	result += "-"
-	result += leadingZeros(t.Day())
-
-	return result
+	return time.Now().Format("2006-01-02")
 }
 
 func time_str() string {
