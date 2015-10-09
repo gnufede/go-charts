@@ -61,26 +61,22 @@ table {
 
 @-webkit-keyframes hand-move {
   0%   { top: 0; }
-  10% { top: 10px; }
-  90% { top: 10px; }
+  50% { top: 10px; }
   100% { top: 0; }
 }
 @-moz-keyframes hand-move {
   0%   { top: 0; }
-  10% { top: 10px; }
-  90% { top: 10px; }
+  50% { top: 10px; }
   100% { top: 0; }
 }
 @-o-keyframes hand-move {
   0%   { top: 0; }
-  10% { top: 10px; }
-  90% { top: 10px; }
+  50% { top: 10px; }
   100% { top: 0; }
 }
 @keyframes hand-move {
   0%   { top: 0; }
-  10% { top: 10px; }
-  90% { top: 10px; }
+  50% { top: 10px; }
   100% { top: 0; }
 }
 .fa-hand-pointer-o {
@@ -93,10 +89,10 @@ table {
   transform: rotate(180deg);
   color: #f2600f;
   position: relative;
-  -webkit-animation: hand-move 4s infinite;
-  -moz-animation:    hand-move 4s infinite;
-  -o-animation:      hand-move 4s infinite;
-  animation:         hand-move 4s infinite;
+  -webkit-animation: hand-move 2s infinite;
+  -moz-animation:    hand-move 2s infinite;
+  -o-animation:      hand-move 2s infinite;
+  animation:         hand-move 2s infinite;
 }
 
 .ticket{

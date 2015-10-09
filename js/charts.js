@@ -28,14 +28,16 @@ function connect_websocket() {
     $(document).ready(function () {
         $("#week-or-not").click(
             function(event) {
+                event.preventDefault();
                 week_or_not = !week_or_not;
                 if (week_or_not) {
                     chart = generate_week(stuff["5"]);
+                    $("#week-or-not").text("Change to 5 min");
                 }
                 else {
                     chart = generate_5m(stuff["7"]);
+                    $("#week-or-not").text("Change to week");
                 }
-                $("#week_or_not").text("Change to 5 min");
             }
         );
     });
@@ -208,7 +210,7 @@ return c3.generate({
         x: {
             type: 'timeseries',
             tick: {
-                format: '%Y-%m-%d',
+                format: '%d-%m-%Y',
             }
         },
         y: {
