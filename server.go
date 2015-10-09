@@ -73,7 +73,7 @@ func sendData(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Printf("recv: %s", message.Payload)
 
-		if (message.Payload == "send") {
+		if message.Payload == "send" {
 			data := Parse() //getDataForOrganizer(organizer)
 			err = c.WriteMessage(websocket.TextMessage, data)
 			//err = c.WriteJSON(data)
@@ -109,13 +109,7 @@ func date_str() string {
 }
 
 func time_str() string {
-	t := time.Now()
-
-	result := strconv.FormatInt(int64(t.Hour()), 10)
-	result += ":"
-	result += leadingZeros(t.Minute())
-
-	return result
+	return time.Now().Format("15:04")
 }
 
 func update_ticket(w http.ResponseWriter, r *http.Request) {
@@ -186,18 +180,17 @@ func read_updates() {
 		if err != nil {
 			log.Println("read:", err)
 		}
-		if (message.Payload == "lets_go") {
+		if message.Payload == "lets_go" {
 			log.Printf("reader recv: %s", message.Payload)
 			updated = true
 		}
 	}
 }
 
-
 func update_data_500() {
 	c := time.Tick(500 * time.Millisecond)
 	for range c {
-		if (updated) {
+		if updated {
 			client.Publish("1", "send")
 			log.Println("sent")
 			updated = false
@@ -208,7 +201,7 @@ func update_data_500() {
 func update_data_1s() {
 	c := time.Tick(1 * time.Minute)
 	for range c {
-	  client.Publish("1", "send")
+		client.Publish("1", "send")
 	}
 }
 

@@ -17,7 +17,7 @@ const ORGANIZER = "1"
 const EVENT = "1"
 const SESSION = "1"
 const CHANNEL = "1"
-const DATE_KEY = "2015-10-08"
+const DATE_KEY = "2015-10-09"
 
 func GetBytes(key interface{}) ([]byte, error) {
 	var buf bytes.Buffer
@@ -161,7 +161,6 @@ func getChannelDataTotals(date string, keyFragments string, channelTypes map[int
 		key := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":Date:" + date + ":" + keyFragments
 		values, values_err := redis.Int(redisScript.Do(redisConn, key))
 		if values_err != nil {
-			fmt.Println(values_err)
 			values = 0
 		}
 		result += values
@@ -175,7 +174,6 @@ func getChannelDataTotalsPerMinute(minute string, keyFragments string, channelTy
 		key := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":Date:" + DATE_KEY + ":" + keyFragments
 		values, values_err := redis.Int(redisConn.Do("HGET", key, minute))
 		if values_err != nil {
-			fmt.Println(values_err)
 			values = 0
 		}
 		result += values
@@ -187,7 +185,6 @@ func getTotalPerChannel(date string, keyFragments string, channel int, redisScri
 	key := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":Date:" + date + ":" + keyFragments
 	values, values_err := redis.Int(redisScript.Do(redisConn, key))
 	if values_err != nil {
-		fmt.Println(values_err)
 		values = 0
 	}
 
@@ -200,7 +197,6 @@ func getTicketTypeTotals(date string, keyType string, ticketId int, channelTypes
 		ticketTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":TicketType:" + strconv.Itoa(ticketId) + ":Date:" + date + ":" + keyType
 		values, values_err := redis.Int(redisScript.Do(redisConn, ticketTypeKey))
 		if values_err != nil {
-			fmt.Println(values_err)
 			values = 0
 		}
 		result += values
@@ -214,7 +210,6 @@ func getTicketTypeTotalsPerMinute(minute string, keyType string, ticketId int, c
 		ticketTypeKey := "Organizer:" + ORGANIZER + ":Event:" + EVENT + ":Channel:" + strconv.Itoa(channel) + ":Session:" + SESSION + ":TicketType:" + strconv.Itoa(ticketId) + ":Date:" + DATE_KEY + ":" + keyType
 		values, values_err := redis.Int(redisConn.Do("HGET", ticketTypeKey, minute))
 		if values_err != nil {
-			fmt.Println(values_err)
 			values = 0
 		}
 		result += values
