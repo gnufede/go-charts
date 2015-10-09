@@ -21,6 +21,7 @@ var (
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
+	updated = false
 )
 
 func getDataForOrganizer(organizer string) []byte {
@@ -72,12 +73,15 @@ func sendData(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Printf("recv: %s", message.Payload)
 
-		data := Parse() //getDataForOrganizer(organizer)
-		err = c.WriteMessage(websocket.TextMessage, data)
-		//err = c.WriteJSON(data)
-		if err != nil {
-			log.Println("write:", err)
-			break
+		if (message.Payload == "send") {
+			data := Parse() //getDataForOrganizer(organizer)
+			err = c.WriteMessage(websocket.TextMessage, data)
+			//err = c.WriteJSON(data)
+			if err != nil {
+				log.Println("write:", err)
+				break
+			}
+
 		}
 	}
 
@@ -152,7 +156,7 @@ func update_ticket(w http.ResponseWriter, r *http.Request) {
 
 	pipe.Exec()
 
-//	client.Publish("1", "lets_go")
+	client.Publish("1", "lets_go")
 }
 
 func main() {
@@ -161,7 +165,9 @@ func main() {
 
 	configure_routes()
 
-	go update_data()
+	go read_updates()
+	go update_data_500()
+	go update_data_1s()
 
 	if err := http.ListenAndServe(*addr, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
@@ -169,16 +175,40 @@ func main() {
 	}
 }
 
-func update_data() {
-	c := time.Tick(500 * time.Millisecond)
-	last_data := []byte
-	for range c {
-		data := Parse()
-
-		if (reflect.DeepEqual(m1, m2))) {
-			client.Publish("1", "lets_go")
+func read_updates() {
+	pubsub, err := client.Subscribe("1")
+	if err != nil {
+		log.Print("subscribe:", err)
+		return
+	}
+	for {
+		message, err := pubsub.ReceiveMessage()
+		if err != nil {
+			log.Println("read:", err)
 		}
-	  last_data := data
+		if (message.Payload == "lets_go") {
+			log.Printf("reader recv: %s", message.Payload)
+			updated = true
+		}
+	}
+}
+
+
+func update_data_500() {
+	c := time.Tick(500 * time.Millisecond)
+	for range c {
+		if (updated) {
+			client.Publish("1", "send")
+			log.Println("sent")
+			updated = false
+		}
+	}
+}
+
+func update_data_1s() {
+	c := time.Tick(1 * time.Minute)
+	for range c {
+	  client.Publish("1", "send")
 	}
 }
 
