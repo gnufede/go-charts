@@ -1,8 +1,8 @@
-var week_or_not = true;
+var week_or_not = false;
+var stuff;
 
 function connect_websocket() {
     var ws = new WebSocket("ws://localhost:8080/ws?organizer=1");
-    var stuff;
 
     ws.onclose = function(){
         setTimeout(function(){connect_websocket()}, 5000);
@@ -10,40 +10,35 @@ function connect_websocket() {
 
     ws.onmessage = function (evt) {
         stuff = JSON.parse(evt.data)
-        chart_week.load({json:stuff["5"]});
-        chart_5m.load({json:stuff["7"]});
         channel.load({json:stuff["6"]});
+
+        if (week_or_not) {
+            chart.load({json:stuff["5"]});
+        }
+        else {
+            chart.load({json:stuff["7"]});
+        }
         update_value($("#tickets-sold-number"), stuff["1"].Value[0]);
         update_value($("#tickets-revenue-number"),stuff["2"].Value[0]);
         update_value($("#tickets-sold-amount"),stuff["3"].Value[0]);
         update_value($("#tickets-revenue-amount"),stuff["4"].Value[0]);
         update_value($("#donut-amount"),stuff["1"].Value[0]);
-
-
-        /*
-        $("#tickets-sold-number").text(stuff["1"].Value[0]);
-        $("#tickets-revenue-number").text(stuff["2"].Value[0]);
-        $("#tickets-sold-amount").text(stuff["3"].Value[0]);
-        $("#tickets-revenue-amount").text(stuff["4"].Value[0]);
-        $("#donut-amount").text(stuff["1"].Value[0]);
-        */
-
     };
 
-    $("#week-or-not").click(
-        function(event) {
-            if (week_or_not) {
-                $("#chart_week").hide();
-                $("#chart_5m").show();
+    $(document).ready(function () {
+        $("#week-or-not").click(
+            function(event) {
+                week_or_not = !week_or_not;
+                if (week_or_not) {
+                    chart = generate_week(stuff["5"]);
+                }
+                else {
+                    chart = generate_5m(stuff["7"]);
+                }
+                $("#week_or_not").text("Change to 5 min");
             }
-            else {
-                $("#chart_week").show();
-                $("#chart_5m").hide();
-            }
-            week_or_not = !week_or_not;
-            $("#week_or_not").text("Change to 5 min");
-        }
-    );
+        );
+    });
 }
 
 function update_value(element, new_value) {
@@ -72,15 +67,15 @@ function set_new_metric($selector, metric) {
 }
 
 
-var chart_5m = c3.generate({
-    bindto: '#chart_5m',
+function generate_5m(json) {
+return c3.generate({
     size: {
         height: 342
     },
     data: {
         x: 'minutes',
         xFormat: '%H:%M',
-        json: {},
+        json: json,
         hide: ["Total"],
         mimeType: 'json',
         colors: {
@@ -105,11 +100,11 @@ var chart_5m = c3.generate({
     legend: {
          item: {
             onclick: function (d, i) {
-                chart_5m.toggle("General");
-                chart_5m.toggle("Gratuita");
-                chart_5m.toggle("Infantil");
-                chart_5m.toggle("Jubilados");
-                chart_5m.toggle("Total");
+                chart.toggle("General");
+                chart.toggle("Gratuita");
+                chart.toggle("Infantil");
+                chart.toggle("Jubilados");
+                chart.toggle("Total");
             },
         },
     },
@@ -161,16 +156,18 @@ var chart_5m = c3.generate({
       }
     }
 });
+}
 
-var chart_week = c3.generate({
-    bindto: '#chart_week',
+
+function generate_week (json) {
+return c3.generate({
     size: {
         height: 342
     },
     data: {
         x: 'date',
         xFormat: '%Y-%m-%d',
-        json: {},
+        json: json,
         hide: ["Total"],
         mimeType: 'json',
         colors: {
@@ -195,11 +192,11 @@ var chart_week = c3.generate({
     legend: {
          item: {
             onclick: function (d, i) {
-                chart_week.toggle("General");
-                chart_week.toggle("Gratuita");
-                chart_week.toggle("Infantil");
-                chart_week.toggle("Jubilados");
-                chart_week.toggle("Total");
+                chart.toggle("General");
+                chart.toggle("Gratuita");
+                chart.toggle("Infantil");
+                chart.toggle("Jubilados");
+                chart.toggle("Total");
             },
         },
     },
@@ -251,6 +248,7 @@ var chart_week = c3.generate({
       }
     }
 });
+}
 
 var channel = c3.generate({
     bindto: '#donut',
@@ -273,6 +271,8 @@ var channel = c3.generate({
         }
     }
 });
+
+var chart = generate_5m({});
 
 connect_websocket();
 
