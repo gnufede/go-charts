@@ -49,6 +49,56 @@ table {
 	border-spacing: 0;
 }
 
+.main-title {
+  font-size: 33px;
+  line-height: 37px;
+  color: #333;
+  margin-bottom: 5px;
+  font-weight: 400;
+  text-align: center;
+  margin-top: 30px;
+}
+
+@-webkit-keyframes hand-move {
+  0%   { top: 0; }
+  10% { top: 10px; }
+  90% { top: 10px; }
+  100% { top: 0; }
+}
+@-moz-keyframes hand-move {
+  0%   { top: 0; }
+  10% { top: 10px; }
+  90% { top: 10px; }
+  100% { top: 0; }
+}
+@-o-keyframes hand-move {
+  0%   { top: 0; }
+  10% { top: 10px; }
+  90% { top: 10px; }
+  100% { top: 0; }
+}
+@keyframes hand-move {
+  0%   { top: 0; }
+  10% { top: 10px; }
+  90% { top: 10px; }
+  100% { top: 0; }
+}
+.fa-hand-pointer-o {
+  text-align: center;
+  display: block;
+  font-size: 30px;
+  margin-bottom: 10px;
+  -moz-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+  color: #f2600f;
+  position: relative;
+  -webkit-animation: hand-move 4s infinite;
+  -moz-animation:    hand-move 4s infinite;
+  -o-animation:      hand-move 4s infinite;
+  animation:         hand-move 4s infinite;
+}
+
 .ticket{
   display: inline-block;
  	width: 25%;
@@ -87,11 +137,11 @@ table {
    -webkit-transition: all 200ms ease-out;
    -moz-transition: all 0.1s;
     transition: all 200ms ease-out;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 .ticket a:hover{
 	cursor:pointer;
-  opacity: 0.8;
 }
 
 .ticket .push {
